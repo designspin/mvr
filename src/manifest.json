@@ -1,0 +1,151 @@
+{
+  "bundles": [
+    {
+      "name": "default",
+      "assets": [
+        {
+          "alias": [
+            "audio/engine-loop.wav"
+          ],
+          "src": [
+            "audio/engine-loop.wav"
+          ]
+        },
+        {
+          "alias": [
+            "audio/engine.wav"
+          ],
+          "src": [
+            "audio/engine.wav"
+          ]
+        },
+        {
+          "alias": [
+            "audio/red-light-chime.wav"
+          ],
+          "src": [
+            "audio/red-light-chime.wav"
+          ]
+        },
+        {
+          "alias": [
+            "audio/red-light-out.wav"
+          ],
+          "src": [
+            "audio/red-light-out.wav"
+          ]
+        },
+        {
+          "alias": [
+            "audio/sounds_engine.wav"
+          ],
+          "src": [
+            "audio/sounds_engine.wav"
+          ]
+        },
+        {
+          "alias": [
+            "fonts/BebasNeue-Regular.ttf"
+          ],
+          "src": [
+            "fonts/BebasNeue-Regular.ttf"
+          ]
+        },
+        {
+          "alias": [
+            "fonts/Bungee-Regular.ttf"
+          ],
+          "src": [
+            "fonts/Bungee-Regular.ttf"
+          ]
+        },
+        {
+          "alias": [
+            "fonts/OpenSans-SemiBold.ttf"
+          ],
+          "src": [
+            "fonts/OpenSans-SemiBold.ttf"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "images/game-screen",
+      "assets": [
+        {
+          "alias": [
+            "images/game-screen/game-screen.json"
+          ],
+          "src": [
+            "images/game-screen/game-screen@1x.json",
+            "images/game-screen/game-screen@0.5x.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true,
+              "tps": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "images/pause-overlay",
+      "assets": [
+        {
+          "alias": [
+            "images/pause-overlay/pause-panel.png"
+          ],
+          "src": [
+            "images/pause-overlay/pause-panel.png"
+          ],
+          "data": {
+            "tags": {
+              "m": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "images/preload",
+      "assets": [
+        {
+          "alias": [
+            "images/preload/preload.json"
+          ],
+          "src": [
+            "images/preload/preload@1x.json",
+            "images/preload/preload@0.5x.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true,
+              "tps": true
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "images/title-screen",
+      "assets": [
+        {
+          "alias": [
+            "images/title-screen/title-screen.json"
+          ],
+          "src": [
+            "images/title-screen/title-screen@1x.json",
+            "images/title-screen/title-screen@0.5x.json"
+          ],
+          "data": {
+            "tags": {
+              "m": true,
+              "tps": true
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

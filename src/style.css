@@ -1,0 +1,21 @@
+html, body {
+  -webkit-touch-callout: none;                
+  -webkit-text-size-adjust: none;
+  -webkit-user-select: none;              
+  user-select: none;
+}
+
+body {
+  overflow: hidden;
+  margin: 0 auto;
+  background-color: black;
+}
+
+canvas {
+  position: absolute;
+  top: 50%;
+  margin: 0 auto;
+  width: 100%;
+  height: auto;
+  transform: translateY(-50%);
+}

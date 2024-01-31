@@ -1,0 +1,34 @@
+{
+  "name": "maximum-velocity-racing",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build-assets && vite --host",
+    "build": "npm run build-assets && tsc && vite build",
+    "build-assets": "assetpack",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@assetpack/cli": "^0.8.0",
+    "@assetpack/core": "^0.8.0",
+    "@assetpack/plugin-compress": "^0.8.0",
+    "@assetpack/plugin-ffmpeg": "^0.8.0",
+    "@assetpack/plugin-json": "^0.8.0",
+    "@assetpack/plugin-manifest": "^0.8.0",
+    "@assetpack/plugin-mipmap": "^0.8.0",
+    "@assetpack/plugin-texture-packer": "^0.8.0",
+    "@assetpack/plugin-webfont": "^0.8.0",
+    "typescript": "^5.2.2",
+    "vite": "^5.0.8"
+  },
+  "dependencies": {
+    "@capacitor/cli": "^5.6.0",
+    "@capacitor/core": "^5.6.0",
+    "@capacitor/ios": "^5.6.0",
+    "@pixi/sound": "^5.2.2",
+    "@pixi/ui": "^0.10.2",
+    "pixi.js": "^7.3.3",
+    "typed-signals": "^2.5.0"
+  }
+}

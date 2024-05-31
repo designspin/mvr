@@ -1,4 +1,4 @@
-import { Graphics, PointData } from "pixi.js";
+import { Color, Graphics, PointData } from "pixi.js";
 import { TrackObject } from "../game/entities/TrackObject";
 import { designConfig } from "../game";
 import { isOdd } from ".";
@@ -158,7 +158,7 @@ export function renderStartLineSegment(
         );
     }
 
-    renderFog(ctx, fog, { x: 0, y: A.y }, { x: designConfig.content.width, y: B.y - A.y });
+    renderFog(ctx, fog, { x: 0, y: B.y }, { x: designConfig.content.width, y: A.y - B.y });
 }
 
 export function renderStartPositionSegment(
@@ -297,6 +297,8 @@ export function renderStartPositionSegment(
             colorRumble
         );
     }
+
+    renderFog(ctx, _fog, { x: 0, y: B.y }, { x: designConfig.content.width, y: A.y - B.y });
 }
 
 export function renderSegment(
@@ -376,15 +378,13 @@ export function renderSegment(
         }
     }
 
-    renderFog(ctx, fog, { x: 0, y: A.y }, { x: designConfig.content.width, y: A.y - B.y });
+    renderFog(ctx, fog, { x: 0, y: B.y }, { x: designConfig.content.width, y: A.y - B.y });
 }
 
 function renderFog(ctx: Graphics, fog: number, location: PointData, size: PointData)
 {
-    console.log(`fog: ${fog}`);
     if(fog < 1)
     {
-        
         ctx.rect(location.x, location.y, size.x, size.y);
         ctx.fill({ color: COLORS.FOG, alpha: 1 - fog});
     }

@@ -207,24 +207,24 @@ export class TrackSystem implements System
         this.addStraight(ROAD.LENGTH.LONG);
         this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.HARD);
         
-        // this.addStraight(ROAD.LENGTH.SHORT);
-        // this.addLowRollingHills();
-        // this.addSCurves();
-        // this.addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM, ROAD.HILL.LOW);
-        // this.addBumps();
-        // this.addLowRollingHills();
-        // this.addCurve(ROAD.LENGTH.LONG * 2, ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
-        // this.addStraight();
-        // this.addHill(ROAD.LENGTH.MEDIUM, ROAD.HILL.HIGH);
-        // this.addSCurves();
-        // this.addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM, ROAD.HILL.NONE);
-        // this.addHill(ROAD.LENGTH.LONG, ROAD.HILL.HIGH);
-        // this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM, -ROAD.HILL.LOW);
-        // this.addBumps();
-        // this.addHill(ROAD.LENGTH.LONG, -ROAD.HILL.MEDIUM);
-        // this.addStraight();
-        // this.addSCurves();
-        // this.addDownhillToEnd();
+        this.addStraight(ROAD.LENGTH.SHORT);
+        this.addLowRollingHills();
+        this.addSCurves();
+        this.addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM, ROAD.HILL.LOW);
+        this.addBumps();
+        this.addLowRollingHills();
+        this.addCurve(ROAD.LENGTH.LONG * 2, ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
+        this.addStraight();
+        this.addHill(ROAD.LENGTH.MEDIUM, ROAD.HILL.HIGH);
+        this.addSCurves();
+        this.addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM, ROAD.HILL.NONE);
+        this.addHill(ROAD.LENGTH.LONG, ROAD.HILL.HIGH);
+        this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM, -ROAD.HILL.LOW);
+        this.addBumps();
+        this.addHill(ROAD.LENGTH.LONG, -ROAD.HILL.MEDIUM);
+        this.addStraight();
+        this.addSCurves();
+        this.addDownhillToEnd();
 
         const startLineSegment1 = this._segments[this.findSegment(player.Z).index + 30];
         const startLineSegment2 = this._segments[this.findSegment(player.Z).index + 29];
@@ -302,12 +302,12 @@ export class TrackSystem implements System
         this.addRoad(num, num, num, 0, 0);
     }
 
-    // private addHill(num?: number, height?: number)
-    // {
-    //     num = num || ROAD.LENGTH.MEDIUM;
-    //     height = height || ROAD.HILL.MEDIUM;
-    //     this.addRoad(num, num, num, 0, height);
-    // }
+    private addHill(num?: number, height?: number)
+    {
+        num = num || ROAD.LENGTH.MEDIUM;
+        height = height || ROAD.HILL.MEDIUM;
+        this.addRoad(num, num, num, 0, height);
+    }
 
     private addCurve(num?: number, curve?: number, height?: number)
     {
@@ -317,42 +317,42 @@ export class TrackSystem implements System
         this.addRoad(num, num, num, curve, height);
     }
 
-    // private addLowRollingHills(num?: number, height?: number)
-    // {
-    //     num = num || ROAD.LENGTH.SHORT;
-    //     height = height || ROAD.HILL.LOW;
-    //     this.addRoad(num, num, num, 0, height / 2);
-    //     this.addRoad(num, num, num, 0, -height);
-    //     this.addRoad(num, num, num, ROAD.CURVE.EASY, height);
-    //     this.addRoad(num, num, num, 0, 0);
-    //     this.addRoad(num, num, num, -ROAD.CURVE.EASY, height / 2);
-    //     this.addRoad(num, num, num, 0, 0);
-    // }
+    private addLowRollingHills(num?: number, height?: number)
+    {
+        num = num || ROAD.LENGTH.SHORT;
+        height = height || ROAD.HILL.LOW;
+        this.addRoad(num, num, num, 0, height / 2);
+        this.addRoad(num, num, num, 0, -height);
+        this.addRoad(num, num, num, ROAD.CURVE.EASY, height);
+        this.addRoad(num, num, num, 0, 0);
+        this.addRoad(num, num, num, -ROAD.CURVE.EASY, height / 2);
+        this.addRoad(num, num, num, 0, 0);
+    }
 
-    // private addSCurves()
-    // {
-    //     this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY, ROAD.HILL.NONE);
-    //     this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
-    //     this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.CURVE.EASY, -ROAD.HILL.LOW);
-    //     this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY, ROAD.HILL.MEDIUM);
-    //     this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY, -ROAD.HILL.MEDIUM);
-    // }
+    private addSCurves()
+    {
+        this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY, ROAD.HILL.NONE);
+        this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
+        this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.CURVE.EASY, -ROAD.HILL.LOW);
+        this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY, ROAD.HILL.MEDIUM);
+        this.addRoad(ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, ROAD.LENGTH.MEDIUM, -ROAD.CURVE.EASY, -ROAD.HILL.MEDIUM);
+    }
 
-    // private addBumps()
-    // {
-    //     this.addRoad(10, 10, 10, 0, 5);
-    //     this.addRoad(10, 10, 10, 0, -2);
-    //     this.addRoad(10, 10, 10, 0, -5);
-    //     this.addRoad(10, 10, 10, 0, 8);
-    //     this.addRoad(10, 10, 10, 0, 5);
-    //     this.addRoad(10, 10, 10, 0, -7);
-    //     this.addRoad(10, 10, 10, 0, 5);
-    //     this.addRoad(10, 10, 10, 0, -2);
-    // }
+    private addBumps()
+    {
+        this.addRoad(10, 10, 10, 0, 5);
+        this.addRoad(10, 10, 10, 0, -2);
+        this.addRoad(10, 10, 10, 0, -5);
+        this.addRoad(10, 10, 10, 0, 8);
+        this.addRoad(10, 10, 10, 0, 5);
+        this.addRoad(10, 10, 10, 0, -7);
+        this.addRoad(10, 10, 10, 0, 5);
+        this.addRoad(10, 10, 10, 0, -2);
+    }
 
-    // private addDownhillToEnd(num?: number)
-    // {
-    //     num = num || 200;
-    //     this.addRoad(num, num, num, -ROAD.CURVE.EASY, -this.lastY() / this.segmentLength);
-    // }
+    private addDownhillToEnd(num?: number)
+    {
+        num = num || 200;
+        this.addRoad(num, num, num, -ROAD.CURVE.EASY, -this.lastY() / this.segmentLength);
+    }
 }

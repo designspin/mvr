@@ -44,7 +44,7 @@ export function easeInOut(a: number, b: number, percent: number): number {
 }
 
 export function exponentialFog(distance: number, density: number): number {
-    return 1 / Math.pow(Math.E, distance * distance * density);
+    return 1 / (Math.pow(Math.E, (distance * distance * density)));
 }
 
 export function randomInt(min: number, max: number): number {

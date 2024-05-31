@@ -16,6 +16,7 @@ export default class CarEntity extends Sprite implements Car
     private _speed: number = 0;
     private _percent: number = 0;
     private _spriteNum: string = "";
+    private _speedMultiplier: number = 1;
 
     constructor(spriteNum: string, game: Game, z: number, offset: number)
     {
@@ -24,6 +25,11 @@ export default class CarEntity extends Sprite implements Car
         this._z = z;
         this._offset = offset;
         this._spriteNum = spriteNum;
+
+        const baseSpeed = 1.5;
+        const minSpeed = baseSpeed * 0.25;
+        const maxSpeed = baseSpeed * 1.2;
+        this._speedMultiplier = Math.random() * (maxSpeed - minSpeed) + minSpeed;
     }
 
     get offset()
@@ -74,9 +80,7 @@ export default class CarEntity extends Sprite implements Car
     get maxSpeed()
     {
         const track = this._game.systems.get(TrackSystem);
-
-        
-        return (1.3 * track.segmentLength) / (1 / 60);
+        return (this._speedMultiplier * track.segmentLength) / (1 / 60);
     }
 
     get accel()

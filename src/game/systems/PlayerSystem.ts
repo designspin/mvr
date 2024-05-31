@@ -7,6 +7,7 @@ import { HudSystem } from "./HudSystem";
 import { TrackSystem } from "./TrackSystem";
 import { accelerate, increase, interpolate, limit, mapToSmaller, overlap, percentRemaining, randomChoice } from "../../utilities";
 import { ObjectSystem } from "./ObjectSystem/ObjectsSystem";
+import Keyboard from '../keyboard';
 import { sound } from "@pixi/sound";
 
 const imageNo = "01";
@@ -21,6 +22,7 @@ export class PlayerSystem implements System
     private _player = new Container();
     private _sprite: Sprite = new Sprite();
     private _shadow: Sprite = new Sprite();
+    private _racing: boolean = false;
 
     public X = 0.7;
     public Y = 0;
@@ -29,6 +31,10 @@ export class PlayerSystem implements System
     private _movementData: JoystickChangeEvent | null = null;
     private _accelData: ControlButtonChangeEvent | null = null;
     private _brakeData: ControlButtonChangeEvent | null = null;
+    private _keyUp: Keyboard = new Keyboard("ArrowUp");
+    private _keyDown: Keyboard = new Keyboard("ArrowDown");
+    private _keyLeft: Keyboard = new Keyboard("ArrowLeft");
+    private _keyRight: Keyboard = new Keyboard("ArrowRight");
 
     get Z()
     {
@@ -109,21 +115,24 @@ export class PlayerSystem implements System
         const objectSystem = this.game.systems.get(ObjectSystem);
         
         objectSystem.signals.onLightsReady.connect(() => {
-            hud.signals.onTouchJoystickMove.connect((data) => {
-                this._movementData = data;
-            });
+            this._racing = true;
+            if(this.game.isMobileDevice) {
+                hud.signals.onTouchJoystickMove.connect((data) => {
+                    this._movementData = data;
+                });
 
-            hud.signals.onAccelChange.connect((data) => {
-                this._accelData = data;
-            });
+                hud.signals.onAccelChange.connect((data) => {
+                    this._accelData = data;
+                });
 
-            hud.signals.onBrakeChange.connect((data) => {
-                this._brakeData = data;
-            });
-    
-            hud.signals.onTouchJoystickEnd.connect(() => {
-                this._movementData = null;
-            });
+                hud.signals.onBrakeChange.connect((data) => {
+                    this._brakeData = data;
+                });
+        
+                hud.signals.onTouchJoystickEnd.connect(() => {
+                    this._movementData = null;
+                });
+            }
         });
         
         this.view.addChild(this._player);
@@ -155,19 +164,21 @@ export class PlayerSystem implements System
         
             if(this._movementData?.direction === "left" ||  
                 this._movementData?.direction === "top-left" || 
-                this._movementData?.direction === "bottom-left") {
+                this._movementData?.direction === "bottom-left" ||
+                this._racing && this._keyLeft.isDown) {
                 this.X = this.X - dx;
             } else if(this._movementData?.direction === "right" || 
                 this._movementData?.direction === "top-right" || 
-                this._movementData?.direction === "bottom-right") {
+                this._movementData?.direction === "bottom-right" ||
+                this._racing && this._keyRight.isDown) {
                 this.X = this.X + dx;
             }
 
             this.X = this.X - (dx * speedPercent * playerSegment.curve * 0.5);
 
-            if(this._accelData?.state === "pressed") {
+            if(this._accelData?.state === "pressed" || this._keyUp.isDown && this._racing) {
                 this._speed = accelerate(this._speed, this.accel, dt);
-            } else if(this._brakeData?.state === "pressed") {
+            } else if(this._brakeData?.state === "pressed" || this._keyDown.isDown && this._racing) {
                 this._speed = accelerate(this._speed, this.breaking, dt);
             } else {
                 this._speed = accelerate(this._speed, this.decel, dt);
@@ -234,7 +245,7 @@ export class PlayerSystem implements System
         this._sprite.scale.set(destW / this.width);
         this._shadow.scale.set(destW / this.width);
 
-        const steer = this._movementData?.direction;
+        const steer = this._movementData?.direction || this._keyLeft.isDown && this._speed > 0 && "left" || this._keyRight.isDown && this.speed > 0 &&  "right";
         const power = this._movementData?.power;
         const upDown = playerSegment.p2.world.y - playerSegment.p1.world.y;
 

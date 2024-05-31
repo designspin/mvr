@@ -113,6 +113,17 @@ class RacingState implements SystemState<CarSystem>
 
         for(let i = 1; i < gameConfig.lookAhead; i++) {
             segment = track.segments[(carSegment.index + i) % track.segments.length];
+            
+            // const curveSpeedReduction: { [key: number]: number } = {
+            //     0: 1,
+            //     2: 0.98,
+            //     4: 0.96,
+            //     6: 0.94
+            // };
+
+            // const speedReduction = curveSpeedReduction[Math.abs(segment.curve)];
+            // car.speed *= speedReduction;
+            
             if (
                 segment === player.segment &&
                 car.speed > player.speed &&

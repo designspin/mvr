@@ -9,7 +9,7 @@ import Camera from './camera';
 import { BGSystem } from './systems/BGSystem';
 import { CarSystem } from './systems/CarSystem/CarSystem';
 import { ObjectSystem } from './systems/ObjectSystem/ObjectsSystem';
-
+import { device } from '../utilities/device';
 export { designConfig } from './designConfig';
 
 export class Game
@@ -20,7 +20,7 @@ export class Game
     public systems: SystemRunner;
     public isGameOver = false;
     public level = 1;
-
+    public isMobileDevice = device.isMobileDevice();
     public sheet?: any;
 
     constructor()

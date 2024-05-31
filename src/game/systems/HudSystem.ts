@@ -36,48 +36,52 @@ export class HudSystem implements System
 
         this._pauseButton = new IconButton('icon-pause');
         this._pauseButton.onPress.connect(() => pause.pause());
-        this._pauseButton.x = designConfig.content.width - 20;
-        this._pauseButton.y = 20;
-
-        this._joystick = new TouchJoystick({
-            onStart: () => {
-                this.signals.onTouchJoystickStart.emit();
-            },
-            onChange: (data) => {
-                this.signals.onTouchJoystickMove.emit(data);
-            },
-            onEnd: () => {
-                this.signals.onTouchJoystickEnd.emit();
-            }
-        });
-
-        this._joystick.x = 100;
-        this._joystick.y = designConfig.content.height - 100;
-
-        this._accelButton = new ControlButton({
-            btnColor: 0x00FF00,
-            onChange: (data) => {
-                this.signals.onAccelChange.emit(data);
-            }
-        });
-
-        this._accelButton.x = designConfig.content.width - 100;
-        this._accelButton.y = designConfig.content.height - 80;
-
-        this._brakeButton = new ControlButton({
-            btnColor: 0xFF0000,
-            onChange: (data) => {
-                this.signals.onBrakeChange.emit(data);
-            }
-        });
-
-        this._brakeButton.x = designConfig.content.width - 180;
-        this._brakeButton.y = designConfig.content.height - 80;
+        this._pauseButton.x = designConfig.content.width - 40;
+        this._pauseButton.y = 40;
 
         this._gameHudContainer.width = designConfig.content.width;
         this._gameHudContainer.height = designConfig.content.height;
 
-        this._gameHudContainer.addChild(this._pauseButton, this._joystick, this._accelButton, this._brakeButton);
+        this._gameHudContainer.addChild(this._pauseButton);
+
+        if(this.game.isMobileDevice) {
+            this._joystick = new TouchJoystick({
+                onStart: () => {
+                    this.signals.onTouchJoystickStart.emit();
+                },
+                onChange: (data) => {
+                    this.signals.onTouchJoystickMove.emit(data);
+                },
+                onEnd: () => {
+                    this.signals.onTouchJoystickEnd.emit();
+                }
+            });
+
+            this._joystick.x = 100;
+            this._joystick.y = designConfig.content.height - 100;
+
+            this._accelButton = new ControlButton({
+                btnColor: 0x00FF00,
+                onChange: (data) => {
+                    this.signals.onAccelChange.emit(data);
+                }
+            });
+
+            this._accelButton.x = designConfig.content.width - 100;
+            this._accelButton.y = designConfig.content.height - 80;
+
+            this._brakeButton = new ControlButton({
+                btnColor: 0xFF0000,
+                onChange: (data) => {
+                    this.signals.onBrakeChange.emit(data);
+                }
+            });
+
+            this._brakeButton.x = designConfig.content.width - 180;
+            this._brakeButton.y = designConfig.content.height - 80;
+
+            this._gameHudContainer.addChild(this._joystick, this._accelButton, this._brakeButton);
+        }
     }
 
     public awake()

@@ -33,8 +33,8 @@ export class ControlButton extends Container
 
         if(!this.settings.btn) {
             const button = new Graphics();
-            button.beginFill(this.settings.btnColor);
-            button.drawCircle(0, 0, 30);
+            button.circle(0, 0, 30);
+            button.fill(this.settings.btnColor);
             button.alpha = 0.5;
             this.settings.btn = button;
         }

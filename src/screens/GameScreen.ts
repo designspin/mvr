@@ -1,4 +1,4 @@
-import { Container } from "pixi.js";
+import { Container, Ticker } from "pixi.js";
 import { Game } from "../game";
 import { animate } from "../utilities";
 import type { AppScreen } from "../navigation";
@@ -43,8 +43,8 @@ export class GameScreen extends Container implements AppScreen
         this._game.reset();
     }
 
-    public update(delta: number)
+    public update(time: Ticker)
     {
-        this._game.update(delta);
+        this._game.update(time);
     }
 }

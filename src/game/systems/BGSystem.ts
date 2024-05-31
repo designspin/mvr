@@ -21,10 +21,10 @@ export class BGSystem implements System
 
     public init()
     {
-        this._bgBack = new TilingSprite(this.game.sheet?.textures["sky-back"], designConfig.content.width, this.game.sheet?.textures["sky-back"].height);
-        this._bgMid = new TilingSprite(this.game.sheet?.textures['mountains'], designConfig.content.width, this.game.sheet?.textures['mountains'].height);
+        this._bgBack = new TilingSprite({texture: this.game.sheet?.textures["sky-back"], width: designConfig.content.width, height: this.game.sheet?.textures["sky-back"].height});
+        this._bgMid = new TilingSprite({ texture: this.game.sheet?.textures['mountains'], width: designConfig.content.width, height: this.game.sheet?.textures['mountains'].height});
         this._bgMid.y = (designConfig.content.height / 4) * 3 - this.game.sheet?.textures['mountains'].height;
-        this._bgFront = new TilingSprite(this.game.sheet?.textures['trees'], designConfig.content.width, this.game.sheet?.textures['trees'].height);
+        this._bgFront = new TilingSprite({ texture: this.game.sheet?.textures['trees'], width: designConfig.content.width, height: this.game.sheet?.textures['trees'].height});
         this._bgFront.y = (designConfig.content.height / 4) * 2.5 - this.game.sheet?.textures['trees'].height;
         this.view.addChild(this._bgBack, this._bgMid, this._bgFront);
         this.game.stage.addChild(this.view);    

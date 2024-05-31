@@ -6,6 +6,7 @@ import { designConfig } from "../..";
 import { TrackObject } from "../../entities/TrackObject";
 import WaitingForLights from "./WaitForLightsState";
 import { Signal } from "typed-signals";
+import { Ticker } from "pixi.js";
 
 export class ObjectSystem implements System, SystemStateMachine<ObjectSystem>
 {
@@ -37,10 +38,9 @@ export class ObjectSystem implements System, SystemStateMachine<ObjectSystem>
         this.resetSprites();
     }
 
-    public update(dt:number)
+    public update(time:Ticker)
     {
-        //dt = dt / 100;
-
+        const dt = time.deltaTime;
         this._state.update(this, dt);
         
         this.render();

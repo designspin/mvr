@@ -1,3 +1,4 @@
+import { Ticker } from "pixi.js";
 import type { Game } from "./index";
 
 export interface SystemState<S = System>{
@@ -19,7 +20,7 @@ export interface System<S extends Game = Game> {
     start?: () => void;
     end?: () => void;
     reset?: () => void;
-    update?: (deltaTime: number) => void;
+    update?: (deltaTime: Ticker) => void;
 }
 
 interface SystemClass<GAME extends Game = Game, SYSTEM extends System<GAME> = System<GAME>> {
@@ -96,9 +97,9 @@ export class SystemRunner
         this.allSystems.forEach((system) => system.start?.());
     }
 
-    public update(deltaTime: number)
+    public update(time: Ticker)
     {
-        this.allSystems.forEach((system) => system.update?.(deltaTime));
+        this.allSystems.forEach((system) => system.update?.(time));
     }
 
     public end()

@@ -1,4 +1,4 @@
-import { Container, Sprite, Text } from "pixi.js";
+import { Container, Sprite, Text, Ticker } from "pixi.js";
 import { AppScreen } from "../navigation";
 import { designConfig } from "../game";
 import { animate, EasingFunctions, i18n } from "../utilities";
@@ -29,12 +29,12 @@ export class LoadScreen extends Container implements AppScreen
         this._spinnerTop.x = designConfig.content.width / 2;
         this.addChild(this._spinnerTop);
 
-        this._text = new Text(i18n.t('loading'), {
+        this._text = new Text({ text: i18n.t('loading'), style: {
             fontFamily: 'Bungee Regular',
             fontSize: 24,
             fill: 0xffffff,
             align: 'center'
-        });
+        }});
 
         this._text.anchor.set(0.5);
         this._text.y = designConfig.content.height / 2 + 100;
@@ -61,10 +61,10 @@ export class LoadScreen extends Container implements AppScreen
         }, 300, EasingFunctions.easeOutQuad);
     }
 
-    public update(delta: number)
+    public update(time: Ticker)
     {
-        this._spinnerTop.rotation += 0.06 * delta;
-        this._spinnerBottom.rotation += 0.03 * delta;
+        this._spinnerTop.rotation += 0.06 * time.deltaTime;
+        this._spinnerBottom.rotation += 0.03 * time.deltaTime;
     }
 
 }

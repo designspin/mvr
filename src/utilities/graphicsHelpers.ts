@@ -1,4 +1,4 @@
-import { Graphics, IPointData } from "pixi.js";
+import { Graphics, PointData } from "pixi.js";
 import { TrackObject } from "../game/entities/TrackObject";
 import { designConfig } from "../game";
 import { isOdd } from ".";
@@ -37,7 +37,7 @@ type ISegmentColorExt = {
 
 type SegmentColor = number | ISegmentColor | ISegmentColorExt;
 
-interface IVec extends IPointData
+interface IVec extends PointData
 {
     z: number;
 }
@@ -72,15 +72,15 @@ export interface ISegment {
     isStartPositionSegment?: boolean;
 }
 
-function polygon (ctx: Graphics, p1: IPointData, p2: IPointData, p3: IPointData, p4: IPointData, color: number)
+function polygon (ctx: Graphics, p1: PointData, p2: PointData, p3: PointData, p4: PointData, color: number)
 {
-    ctx.beginFill(color);
+    
     ctx.moveTo(p1.x, p1.y);
     ctx.lineTo(p2.x, p2.y);
     ctx.lineTo(p3.x, p3.y);
     ctx.lineTo(p4.x, p4.y);
     ctx.closePath();
-    ctx.endFill();
+    ctx.fill(color);
 }
 
 export function renderStartLineSegment(
@@ -98,8 +98,9 @@ export function renderStartLineSegment(
     const A = segA.screen;
     const B = segB.screen;
 
-    ctx.beginFill((color as ISegmentColor).grass);
-    ctx.drawRect(0, B.y, designConfig.content.width, A.y - B.y);
+    
+    ctx.rect(0, B.y, designConfig.content.width, A.y - B.y);
+    ctx.fill((color as ISegmentColor).grass);
 
     if((color as ISegmentColor).road) {
         const colorRoad = (color as ISegmentColor).road;
@@ -176,8 +177,9 @@ export function renderStartPositionSegment(
     const A = segA.screen;
     const B = segB.screen;
 
-    ctx.beginFill((color as ISegmentColor).grass);
-    ctx.drawRect(0, B.y, designConfig.content.width, A.y - B.y);
+    
+    ctx.rect(0, B.y, designConfig.content.width, A.y - B.y);
+    ctx.fill((color as ISegmentColor).grass);
 
     if((color as ISegmentColor).road) {
         const colorRoad = (color as ISegmentColor).road;
@@ -313,8 +315,9 @@ export function renderSegment(
     const A = segA.screen;
     const B = segB.screen;
 
-    ctx.beginFill((color as ISegmentColor).grass);
-    ctx.drawRect(0, B.y, designConfig.content.width, A.y - B.y);
+    
+    ctx.rect(0, B.y, designConfig.content.width, A.y - B.y);
+    ctx.fill((color as ISegmentColor).grass);
 
     if((color as ISegmentColor).rumble)
     {
@@ -376,13 +379,14 @@ export function renderSegment(
     renderFog(ctx, fog, { x: 0, y: A.y }, { x: designConfig.content.width, y: A.y - B.y });
 }
 
-function renderFog(ctx: Graphics, fog: number, location: IPointData, size: IPointData)
+function renderFog(ctx: Graphics, fog: number, location: PointData, size: PointData)
 {
+    console.log(`fog: ${fog}`);
     if(fog < 1)
     {
-        ctx.beginFill(COLORS.FOG, 1 - fog);
-        ctx.drawRect(location.x, location.y, size.x, size.y);
-        ctx.endFill();
+        
+        ctx.rect(location.x, location.y, size.x, size.y);
+        ctx.fill({ color: COLORS.FOG, alpha: 1 - fog});
     }
 }
 

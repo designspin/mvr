@@ -5,6 +5,7 @@ import { gameConfig } from "../../gameConfig";
 import Car from "../../entities/Car";
 import IdleState from "./IdleState";
 import { ObjectSystem } from "../ObjectSystem/ObjectsSystem";
+import { Ticker } from "pixi.js";
 
 export class CarSystem implements System, SystemStateMachine<CarSystem>
 {
@@ -36,8 +37,8 @@ export class CarSystem implements System, SystemStateMachine<CarSystem>
         this.resetCars();
     }
 
-    public update(dt: number) {
-        this._state.update(this, dt);
+    public update(time: Ticker) {
+        this._state.update(this, time.deltaTime);
     }
 
     public resetCars()

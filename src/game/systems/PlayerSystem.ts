@@ -1,4 +1,4 @@
-import { Container, Sprite } from "pixi.js";
+import { Container, Sprite, Ticker } from "pixi.js";
 import { System } from "../SystemRunner";
 import { Game, designConfig } from "..";
 import { JoystickChangeEvent } from "../TouchJoystick";
@@ -148,13 +148,13 @@ export class PlayerSystem implements System
         });
     }
 
-    public update(dt: number)
+    public update(time: Ticker)
     {
         const track = this.game.systems.get(TrackSystem);
 
         sound.find('audio/engine-loop.wav').speed = mapToSmaller(this._speed, this.maxSpeed, 3.2, 0.8);
         
-        dt = dt / 100;
+        const dt = time.deltaTime / 100;
         this.game.camera.position = increase(this.game.camera.position, dt * this.speed, track.trackLength);
         const playerSegment = this.segment;
         const playerPercent = percentRemaining(this.game.camera.position + this.Z, track.segmentLength);

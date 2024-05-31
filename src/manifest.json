@@ -8,7 +8,8 @@
             "audio/engine-loop.wav"
           ],
           "src": [
-            "audio/engine-loop.wav"
+            "audio/engine-loop.mp3",
+            "audio/engine-loop.ogg"
           ]
         },
         {
@@ -16,7 +17,8 @@
             "audio/engine.wav"
           ],
           "src": [
-            "audio/engine.wav"
+            "audio/engine.mp3",
+            "audio/engine.ogg"
           ]
         },
         {
@@ -24,7 +26,8 @@
             "audio/red-light-chime.wav"
           ],
           "src": [
-            "audio/red-light-chime.wav"
+            "audio/red-light-chime.mp3",
+            "audio/red-light-chime.ogg"
           ]
         },
         {
@@ -32,7 +35,8 @@
             "audio/red-light-out.wav"
           ],
           "src": [
-            "audio/red-light-out.wav"
+            "audio/red-light-out.mp3",
+            "audio/red-light-out.ogg"
           ]
         },
         {
@@ -40,7 +44,8 @@
             "audio/sounds_engine.wav"
           ],
           "src": [
-            "audio/sounds_engine.wav"
+            "audio/sounds_engine.mp3",
+            "audio/sounds_engine.ogg"
           ]
         },
         {

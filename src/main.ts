@@ -9,12 +9,14 @@ import { TitleScreen } from './screens/TitleScreen';
 
 import './style.css'
 
-export const app = new Application<HTMLCanvasElement>({
-  resolution: Math.max(window.devicePixelRatio, 2),
-  backgroundColor: 0x448EE2,
-  width: designConfig.content.width,
-  height: designConfig.content.height,
-});
+export const app = new Application();
+
+// export const app = new Application<HTMLCanvasElement>({
+//   resolution: Math.max(window.devicePixelRatio, 2),
+//   backgroundColor: 0x448EE2,
+//   width: designConfig.content.width,
+//   height: designConfig.content.height,
+// });
 
 // @ts-ignore
 globalThis.__PIXI_APP__ = app;
@@ -24,8 +26,15 @@ export let hasInteracted = false;
 async function init()
 {
     navigation.init();
+
+    await app.init({
+        resolution: Math.max(window.devicePixelRatio, 2),
+        backgroundColor: 0x448EE2,
+        width: designConfig.content.width,
+        height: designConfig.content.height,
+    })
     
-    document.body.appendChild(app.view);
+    document.body.appendChild(app.canvas);
 
     await initAssets();
 

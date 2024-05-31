@@ -1,3 +1,4 @@
+import { Ticker } from "pixi.js";
 import { Game } from "..";
 import { System } from "../SystemRunner";
 
@@ -11,7 +12,7 @@ class SoundSystem implements System
         
     }
 
-    public update(_dt:number)
+    public update(_dt:Ticker)
     {
     }
 }

@@ -11,9 +11,8 @@ class WaitingForLights implements SystemState<ObjectSystem>
 
     public update(ctx: ObjectSystem, dt: number)
     {
-        const ms = dt / Ticker.targetFPMS;
-        this._time += ms;
-
+        //const ms = dt / Ticker.targetFPMS;
+        this._time += dt * 15;
         if(this._time >= 1000 && this._lightState === 0) {
            if(ctx.lightsRef) ctx.lightsRef.texture = ctx.game.sheet.textures["start-lights-1"];
             this._lightState++;

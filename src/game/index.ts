@@ -1,4 +1,4 @@
-import { Assets, Container, type DisplayObject } from 'pixi.js';
+import { Assets, Container, Ticker } from 'pixi.js';
 import { SystemRunner } from './SystemRunner';
 import { PauseSystem } from './systems/PauseSystem';
 import { HudSystem } from './systems/HudSystem';
@@ -29,17 +29,17 @@ export class Game
         this.systems = new SystemRunner(this);
     }
 
-    public addToGame(...displayObjects: DisplayObject[])
+    public addToGame(...views: Container[])
     {
-        displayObjects.forEach(displayObject => {
-            this.gameContainer.addChild(displayObject);
+        views.forEach(view => {
+            this.gameContainer.addChild(view);
         });
     }
 
-    public removeFromGame(...displayObjects: DisplayObject[])
+    public removeFromGame(...views: Container[])
     {
-        displayObjects.forEach(displayObject => {
-            displayObject.removeFromParent();
+        views.forEach(view => {
+            view.removeFromParent();
         });
     }
 
@@ -79,10 +79,10 @@ export class Game
         this.systems.end();
     }
 
-    public update(delta: number)
+    public update(time: Ticker)
     {
         if(this.systems.get(PauseSystem).isPaused || this.isGameOver) return;
-        this.systems.update(delta);
+        this.systems.update(time);
     }
 
     public reset()

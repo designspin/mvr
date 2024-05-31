@@ -48,16 +48,17 @@ export class TouchJoystick extends Container {
 
         if(!this.settings.outer) {
             const outer = new Graphics();
-            outer.beginFill(0xffffff);
-            outer.drawCircle(0, 0, 60);
+            
+            outer.circle(0, 0, 60);
+            outer.fill(0xffffff);
             outer.alpha = 0.5;
             this.settings.outer = outer;
         }
 
         if(!this.settings.inner) {
             const inner = new Graphics();
-            inner.beginFill(0xffffff);
-            inner.drawCircle(0, 0, 30);
+            inner.circle(0, 0, 30);
+            inner.fill(0xffffff);
             inner.alpha = this.innerAlphaStanby;
             this.settings.inner = inner;
         }

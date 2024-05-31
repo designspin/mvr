@@ -4,7 +4,7 @@ import {
     ExtensionType,
     resolveTextureUrl,
     ResolveURLParser,
-    settings,
+    Resolver,
     UnresolvedAsset,
 } from 'pixi.js';
 
@@ -13,8 +13,7 @@ import manifest from '../manifest.json';
 export const resolveJsonUrl = {
     extension: ExtensionType.ResolveParser,
     test: (value: string): boolean =>
-    // @ts-expect-error should be fixed in the next version
-    settings.RETINA_PREFIX.test(value) && value.endsWith('.json'),
+    Resolver.RETINA_PREFIX.test(value) && value.endsWith('.json'),
     parse: resolveTextureUrl.parse,
 } as ResolveURLParser;
 

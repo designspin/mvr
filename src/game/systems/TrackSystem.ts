@@ -198,6 +198,7 @@ export class TrackSystem implements System
         const player = this.game.systems.get(PlayerSystem);
 
         this._segments = [];
+        
         this.addStraight(ROAD.LENGTH.LONG);
         this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.HARD);
         this.addStraight(ROAD.LENGTH.LONG);
@@ -238,6 +239,7 @@ export class TrackSystem implements System
         const startPosition5 = this._segments[this.findSegment(player.Z).index + 5];
         const startPosition6 = this._segments[this.findSegment(player.Z).index];
 
+        startLineSegment1.isFinishMarker = true;
         startLineSegment1.color = COLORS.START;
         startLineSegment2.color = COLORS.START;
         startLineSegment3.color = COLORS.START;

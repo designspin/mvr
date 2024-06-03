@@ -7,6 +7,7 @@ import { PlayerSystem } from "../PlayerSystem";
 import Car from "../../entities/Car";
 import { gameConfig } from "../../gameConfig";
 import { Texture } from "pixi.js";
+import { HudSystem } from "../HudSystem";
 
 class RacingState implements SystemState<CarSystem>
 {
@@ -14,10 +15,31 @@ class RacingState implements SystemState<CarSystem>
     {
         dt = dt / 100;
 
+        const hud = ctx.game.systems.get(HudSystem);
         const track = ctx.game.systems.get(TrackSystem);
+        const playerSystem = ctx.game.systems.get(PlayerSystem);
         const baseSegment = track.findSegment(ctx.game.camera.position);
 
         this.updateCars(ctx, dt);
+
+        const allCars = [...ctx.cars, playerSystem];
+
+        allCars.sort((a, b) => b.lap - a.lap);
+
+        allCars.sort((a, b) => {
+            if(a.lap === b.lap) {
+                return b.z - a.z;
+            }
+            return 0;
+        });
+        
+        for(let i = 0; i < allCars.length; i++) {
+            allCars[i].racePosition = i + 1;
+
+            if(allCars[i] instanceof PlayerSystem) {
+                hud.setPosition(allCars[i].racePosition);
+            }
+        }
         
         for (let n = ctx.game.camera.drawDistance - 1; n > 0; n--) {
             const segment: ISegment = track.segments[(baseSegment.index + n) % track.segments.length];
@@ -75,9 +97,18 @@ class RacingState implements SystemState<CarSystem>
             car.visible = false;
             const segment = track.findSegment(car.z);
             car.offset = car.offset + this.updateCarOffset(ctx, car, segment);
-            car.speed = accelerate(car.speed, car.accel, dt);
-            car.speed = limit(car.speed, 0, car.maxSpeed);
+            
+            if(segment.curve !== 0) {
+                car.speed = accelerate(car.speed, car.accel, dt);
+                car.speed = limit(car.speed, 0, car.maxSpeed - segment.curve * 0.1);
+            } else {
+                car.speed = accelerate(car.speed, car.accel, dt);
+                car.speed = limit(car.speed, 0, car.maxSpeed);
+            }
+
+            
             car.z = increase(car.z, dt * car.speed, track.trackLength);
+            
             car.percent = percentRemaining(car.z, track.segmentLength);
 
             const newSegment = track.findSegment(car.z);
@@ -86,11 +117,16 @@ class RacingState implements SystemState<CarSystem>
                 
                 const index = segment.cars && segment.cars?.indexOf(car);
                 index !== undefined && segment.cars?.splice(index, 1);
+                
                 if (newSegment.cars === undefined) {
                     newSegment.cars = [];
                 }
+
+                if (newSegment.isFinishMarker) {
+                    car.lap++;
+                }
+
                 newSegment.cars.push(car);
-                
             }
         }
     }
@@ -113,16 +149,6 @@ class RacingState implements SystemState<CarSystem>
 
         for(let i = 1; i < gameConfig.lookAhead; i++) {
             segment = track.segments[(carSegment.index + i) % track.segments.length];
-            
-            // const curveSpeedReduction: { [key: number]: number } = {
-            //     0: 1,
-            //     2: 0.98,
-            //     4: 0.96,
-            //     6: 0.94
-            // };
-
-            // const speedReduction = curveSpeedReduction[Math.abs(segment.curve)];
-            // car.speed *= speedReduction;
             
             if (
                 segment === player.segment &&

@@ -45,7 +45,7 @@ export class CarSystem implements System, SystemStateMachine<CarSystem>
     {
         const track = this.game.systems.get(TrackSystem);
         const startPositions = track.segments.filter(s => s.isStartPositionSegment);
-        const spriteNums = ["01", "02", "03", "04"];
+        const spriteNums = ["02", "03", "04"];
         
         for(let i = 0; i < startPositions.length; i++)
         {

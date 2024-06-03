@@ -70,6 +70,7 @@ export interface ISegment {
     cars?: CarEntity[];
     isStartLineSegment?: "odd" | "even";
     isStartPositionSegment?: boolean;
+    isFinishMarker?: boolean;
 }
 
 function polygon (ctx: Graphics, p1: PointData, p2: PointData, p3: PointData, p4: PointData, color: number)

@@ -1,56 +1,73 @@
-import { Container, TilingSprite } from "pixi.js";
+import { Container, Sprite, Texture } from "pixi.js";
 import { Game } from "..";
 import { System } from "../SystemRunner";
-import { increase } from "../../utilities";
 import { designConfig } from "..";
 import { PlayerSystem } from "./PlayerSystem";
-import { gameConfig } from "../gameConfig";
 
-export class BGSystem implements System
-{
+export class BGSystem implements System {
     public static SYSTEM_ID = 'bg';
     public game!: Game;
     public view = new Container();
 
-    private _bgBack!: TilingSprite;
+    private _bgBack: Array<Sprite> = [];
     private _bgBackStartPos: number = 0;
-    private _bgMid!: TilingSprite;
+    private _bgMid: Array<Sprite> = [];
     private _bgMidStartPos: number = 0;
-    private _bgFront!: TilingSprite;
+    private _bgFront: Array<Sprite> = [];
     private _bgFrontStartPos: number = 0;
 
-    public init()
-    {
-        this._bgBack = new TilingSprite({texture: this.game.sheet?.textures["sky-back"], width: designConfig.content.width, height: this.game.sheet?.textures["sky-back"].height});
-        this._bgMid = new TilingSprite({ texture: this.game.sheet?.textures['mountains'], width: designConfig.content.width, height: this.game.sheet?.textures['mountains'].height});
-        this._bgMid.y = (designConfig.content.height / 4) * 3 - this.game.sheet?.textures['mountains'].height;
-        this._bgFront = new TilingSprite({ texture: this.game.sheet?.textures['trees'], width: designConfig.content.width, height: this.game.sheet?.textures['trees'].height});
-        this._bgFront.y = (designConfig.content.height / 4) * 2.5 - this.game.sheet?.textures['trees'].height;
-        this.view.addChild(this._bgBack, this._bgMid, this._bgFront);
-        this.game.stage.addChild(this.view);    
+    public init() {
+        this._bgBack = this.createBackgroundSprites(this.game.sheet?.textures["sky-back"]);
+        this._bgMid = this.createBackgroundSprites(this.game.sheet?.textures['mountains']);
+        this._bgMid.forEach(sprite => {
+            sprite.y = (designConfig.content.height / 4) * 3 - sprite.height;
+        });
+        this._bgFront = this.createBackgroundSprites(this.game.sheet?.textures['trees']);
+        this._bgFront.forEach(sprite => {
+            sprite.y = (designConfig.content.height / 4) * 2.5 - sprite.height;
+        });
+        this.view.addChild(...this._bgBack, ...this._bgMid, ...this._bgFront);
+        this.game.stage.addChild(this.view);
     }
 
-    public update()
-    {
+    private createBackgroundSprites(texture: Texture): Sprite[] {
+        texture.baseTexture.wrapMode = "mirror-repeat";
+        const sprites = [];
+        for (let i = 0; i < 2; i++) {
+            const sprite = new Sprite(texture);
+            sprite.x = i * sprite.width;
+            sprites.push(sprite);
+        }
+        return sprites;
+    }
+
+    public update() {
         const player = this.game.systems.get(PlayerSystem);
-        
-        this._bgBack.tilePosition.x = this._bgBack.tilePosition.x -  Math.floor(designConfig.content.width * increase(
-            this._bgBack.tilePosition.x, 
-            0.001 * player.segment.curve * (this.game.camera.position - this._bgBackStartPos) / gameConfig.trackData.level1.segLength, 
-            1));
 
-        this._bgMid.tilePosition.x = this._bgMid.tilePosition.x - Math.floor(designConfig.content.width * increase(
-            this._bgMid.tilePosition.x, 
-            0.002 * player.segment.curve * (this.game.camera.position - this._bgMidStartPos) / gameConfig.trackData.level1.segLength, 
-            1));
-        
-        this._bgFront.tilePosition.x = this._bgFront.tilePosition.x - Math.floor(designConfig.content.width * increase(
-            this._bgFront.tilePosition.x, 
-            0.003 * player.segment.curve * (this.game.camera.position - this._bgFrontStartPos) / gameConfig.trackData.level1.segLength, 
-            1));
+        if (player.segment.curve === 0) return;
 
-        this._bgBackStartPos = this.game.camera.position;
-        this._bgMidStartPos = this.game.camera.position;
-        this._bgFrontStartPos = this.game.camera.position;
+        const curve = player.segment.curve;
+        const cameraPos = this.game.camera.position;
+
+        const updatePosition = (sprites: Sprite[], startPos: number, factor: number) => {
+            for (const sprite of sprites) {
+                sprite.x -= factor * curve * (player.speed / 10000);
+                if (sprite.x + sprite.width < 0) {
+                    sprite.x += sprite.width * sprites.length;
+                } else if (sprite.x > sprite.width * (sprites.length - 1)) {
+                    sprite.x -= sprite.width * sprites.length;
+                }
+            }
+            startPos = cameraPos;
+        }
+
+        updatePosition(this._bgBack, this._bgBackStartPos, 0.25); // slower
+        this._bgBackStartPos = cameraPos;
+
+        updatePosition(this._bgMid, this._bgMidStartPos, 0.5); // slower
+        this._bgMidStartPos = cameraPos;
+
+        updatePosition(this._bgFront, this._bgFrontStartPos, 0.75); // slower
+        this._bgFrontStartPos = cameraPos;
     }
 }

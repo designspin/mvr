@@ -5,7 +5,7 @@ import { JoystickChangeEvent } from "../TouchJoystick";
 import { ControlButtonChangeEvent } from "../ControlButton";
 import { HudSystem } from "./HudSystem";
 import { TrackSystem } from "./TrackSystem";
-import { accelerate, increase, interpolate, limit, mapToSmaller, overlap, percentRemaining, randomChoice } from "../../utilities";
+import { ISegment, accelerate, increase, interpolate, limit, mapToSmaller, overlap, percentRemaining, randomChoice } from "../../utilities";
 import { ObjectSystem } from "./ObjectSystem/ObjectsSystem";
 import Keyboard from '../keyboard';
 import { sound } from "@pixi/sound";
@@ -23,6 +23,7 @@ export class PlayerSystem implements System
     private _sprite: Sprite = new Sprite();
     private _shadow: Sprite = new Sprite();
     private _racing: boolean = false;
+    private _lap: number = 0;
 
     public X = 0.7;
     public Y = 0;
@@ -35,10 +36,32 @@ export class PlayerSystem implements System
     private _keyDown: Keyboard = new Keyboard("ArrowDown");
     private _keyLeft: Keyboard = new Keyboard("ArrowLeft");
     private _keyRight: Keyboard = new Keyboard("ArrowRight");
+    private _previousSegment: ISegment | null = null;
+    private _racePosition: number = 0;
+
+    get z()
+    {
+        return this.game.camera.position + this.Z;
+    }
 
     get Z()
     {
         return this.game.camera.height / this.game.camera.depth;
+    }
+
+    get racePosition()
+    {
+        return this._racePosition
+    }
+
+    set racePosition(value: number)
+    {
+        this._racePosition = value;
+    }
+
+    get lap()
+    {
+        return this._lap;
     }
 
     get maxSpeed()
@@ -112,6 +135,7 @@ export class PlayerSystem implements System
             throw new Error("Unable to assign texture for player.");
         }
         const hud = this.game.systems.get(HudSystem);
+    
         const objectSystem = this.game.systems.get(ObjectSystem);
         
         objectSystem.signals.onLightsReady.connect(() => {
@@ -272,5 +296,13 @@ export class PlayerSystem implements System
 
             this._shadow.texture = this._sprite.texture;
         }
+
+        if(this._previousSegment !== playerSegment && playerSegment.isFinishMarker) {
+            const hud = this.game.systems.get(HudSystem);
+            this._lap++;
+            hud.setLapCount(this._lap);
+        }
+
+        this._previousSegment = playerSegment;
     }
 }

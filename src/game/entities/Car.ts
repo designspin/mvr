@@ -1,11 +1,14 @@
 import { Sprite } from "pixi.js";
 import { Game } from "..";
 import { TrackSystem } from "../systems/TrackSystem";
+import { ISegment } from "../../utilities";
 
 interface Car {
     offset: number;
     z: number;
     speed: number;
+    lap: number;
+    previousSegment?: ISegment;
 }
 
 export default class CarEntity extends Sprite implements Car
@@ -17,6 +20,8 @@ export default class CarEntity extends Sprite implements Car
     private _percent: number = 0;
     private _spriteNum: string = "";
     private _speedMultiplier: number = 1;
+    private _lap: number = 0;
+    private _racePosition: number = 0;
 
     constructor(spriteNum: string, game: Game, z: number, offset: number)
     {
@@ -30,6 +35,16 @@ export default class CarEntity extends Sprite implements Car
         const minSpeed = baseSpeed * 0.25;
         const maxSpeed = baseSpeed * 1.2;
         this._speedMultiplier = Math.random() * (maxSpeed - minSpeed) + minSpeed;
+    }
+
+    get racePosition()
+    {
+        return this._racePosition
+    }
+
+    set racePosition(position: number)
+    {
+        this._racePosition = position;
     }
 
     get offset()
@@ -62,6 +77,16 @@ export default class CarEntity extends Sprite implements Car
         this._speed = speed;
     }
 
+    get lap()
+    {
+        return this._lap;
+    }
+
+    set lap(lap: number)
+    {
+        this._lap = lap;
+    }
+
     get percent()
     {
         return this._percent;
@@ -85,7 +110,17 @@ export default class CarEntity extends Sprite implements Car
 
     get accel()
     {
-        return this.maxSpeed / 5;
+        return 1.5 * (this.maxSpeed / 5);
+    }
+
+    get breaking()
+    {
+        return -this.maxSpeed;
+    }
+
+    get decel()
+    {
+        return -this.maxSpeed / 5;
     }
 
     get spriteNum()

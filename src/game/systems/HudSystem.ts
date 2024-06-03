@@ -1,12 +1,13 @@
 import { System } from "../SystemRunner";
 import { Game } from "../";
-import { Container } from "pixi.js";
+import { Container, Text, TextStyle } from "pixi.js";
 import { designConfig } from "../designConfig";
 import { IconButton } from "../../ui/buttons/IconButton";
 import { PauseSystem } from "./PauseSystem";
 import { TouchJoystick, JoystickChangeEvent } from '../TouchJoystick';
 import { ControlButton, ControlButtonChangeEvent } from "../ControlButton";
 import { Signal } from "typed-signals";
+
 export class HudSystem implements System
 {
     public static SYSTEM_ID = 'hud';
@@ -27,6 +28,9 @@ export class HudSystem implements System
     private _accelButton!: ControlButton;
     private _brakeButton!: ControlButton;
 
+    private _lapCounter!: Text;
+    private _positionCounter!: Text;
+
     public init()
     {
         this.view.addChild(this._gameHudContainer);
@@ -39,10 +43,32 @@ export class HudSystem implements System
         this._pauseButton.x = designConfig.content.width - 40;
         this._pauseButton.y = 40;
 
+        const style = new TextStyle({
+            fontFamily: 'Bungee Regular',
+            fontSize: 24,
+            fill: 0xffffff,
+            stroke: {
+                width: 4,
+                color: 0x000000,
+                join: 'round'
+            },
+            align: 'center'
+        });
+
+        this._lapCounter = new Text({ text: 'Lap: 0/3', style: style});
+        this._lapCounter.x = 20;
+        this._lapCounter.y = 20;
+
+        this._positionCounter = new Text({ text: 'Position: 12', style: style});
+        this._positionCounter.x = 200;
+        this._positionCounter.y = 20;
+
         this._gameHudContainer.width = designConfig.content.width;
         this._gameHudContainer.height = designConfig.content.height;
 
         this._gameHudContainer.addChild(this._pauseButton);
+        this._gameHudContainer.addChild(this._lapCounter);
+        this._gameHudContainer.addChild(this._positionCounter);
 
         if(this.game.isMobileDevice) {
             this._joystick = new TouchJoystick({
@@ -82,6 +108,16 @@ export class HudSystem implements System
 
             this._gameHudContainer.addChild(this._joystick, this._accelButton, this._brakeButton);
         }
+    }
+
+    public setLapCount(laps: number)
+    {
+        this._lapCounter.text = `Lap: ${laps}/3`;
+    }
+
+    public setPosition(position: number)
+    {
+        this._positionCounter.text = `Position: ${position}`;
     }
 
     public awake()

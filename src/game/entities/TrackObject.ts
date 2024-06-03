@@ -1,10 +1,10 @@
-import { Sprite, Texture, Resource } from "pixi.js";
+import { Sprite, Texture } from "pixi.js";
 
 export class TrackObject extends Sprite {
     offset: number = 0;
     source: string = "";
 
-    constructor(texture: Texture<Resource>, offset: number, source: string)
+    constructor(texture: Texture, offset: number, source: string)
     {
         super(texture);
         this.offset = offset;

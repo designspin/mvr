@@ -198,34 +198,46 @@ export class TrackSystem implements System
         const player = this.game.systems.get(PlayerSystem);
 
         this._segments = [];
-        
-        this.addStraight(ROAD.LENGTH.LONG);
-        this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.HARD);
-        this.addStraight(ROAD.LENGTH.LONG);
-        this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.HARD);
-        this.addStraight(ROAD.LENGTH.LONG);
-        this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.HARD);
-        this.addStraight(ROAD.LENGTH.LONG);
-        this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.HARD);
-        
-        this.addStraight(ROAD.LENGTH.SHORT);
-        this.addLowRollingHills();
-        this.addSCurves();
-        this.addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM, ROAD.HILL.LOW);
-        this.addBumps();
-        this.addLowRollingHills();
-        this.addCurve(ROAD.LENGTH.LONG * 2, ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
-        this.addStraight();
-        this.addHill(ROAD.LENGTH.MEDIUM, ROAD.HILL.HIGH);
-        this.addSCurves();
-        this.addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM, ROAD.HILL.NONE);
-        this.addHill(ROAD.LENGTH.LONG, ROAD.HILL.HIGH);
-        this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM, -ROAD.HILL.LOW);
-        this.addBumps();
-        this.addHill(ROAD.LENGTH.LONG, -ROAD.HILL.MEDIUM);
-        this.addStraight();
-        this.addSCurves();
-        this.addDownhillToEnd();
+
+        for(let i = 0; i < gameConfig.trackData[`level${this.game.level.toString()}` as keyof typeof gameConfig.trackData].track.length; i++) {
+            const trackSegment = gameConfig.trackData[`level${this.game.level.toString()}` as keyof typeof gameConfig.trackData].track[i];
+            if (typeof this[trackSegment.func as keyof TrackSystem] === 'function') {
+                if (trackSegment.params) {
+                    (this[trackSegment.func as keyof TrackSystem] as Function)(...trackSegment.params);
+                } else {
+                    (this[trackSegment.func as keyof TrackSystem] as Function)();
+                }
+            } else {
+                console.error(`Function ${trackSegment.func} does not exist in TrackSystem`);
+            }
+        }
+
+        // this.addStraight(ROAD.LENGTH.LONG);
+        // this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.HARD);
+        // this.addStraight(ROAD.LENGTH.LONG);
+        // this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.HARD);
+        // this.addStraight(ROAD.LENGTH.LONG);
+        // this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.HARD);
+        // this.addStraight(ROAD.LENGTH.LONG);
+        // this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.HARD);
+        // this.addStraight(ROAD.LENGTH.SHORT);
+        // this.addLowRollingHills();
+        // this.addSCurves();
+        // this.addCurve(ROAD.LENGTH.MEDIUM, ROAD.CURVE.MEDIUM, ROAD.HILL.LOW);
+        // this.addBumps();
+        // this.addLowRollingHills();
+        // this.addCurve(ROAD.LENGTH.LONG * 2, ROAD.CURVE.MEDIUM, ROAD.HILL.MEDIUM);
+        // this.addStraight();
+        // this.addHill(ROAD.LENGTH.MEDIUM, ROAD.HILL.HIGH);
+        // this.addSCurves();
+        // this.addCurve(ROAD.LENGTH.LONG, -ROAD.CURVE.MEDIUM, ROAD.HILL.NONE);
+        // this.addHill(ROAD.LENGTH.LONG, ROAD.HILL.HIGH);
+        // this.addCurve(ROAD.LENGTH.LONG, ROAD.CURVE.MEDIUM, -ROAD.HILL.LOW);
+        // this.addBumps();
+        // this.addHill(ROAD.LENGTH.LONG, -ROAD.HILL.MEDIUM);
+        // this.addStraight();
+        // this.addSCurves();
+        // this.addDownhillToEnd();
 
         const startLineSegment1 = this._segments[this.findSegment(player.Z).index + 30];
         const startLineSegment2 = this._segments[this.findSegment(player.Z).index + 29];

@@ -4,6 +4,7 @@ import { EasingFunctions, animate, i18n } from "../utilities";
 import { designConfig } from "../game/designConfig";
 import { SecondaryButton } from "../ui/buttons/SecondaryButton";
 import { GameScreen } from "./GameScreen";
+import { ChampionshipScreen } from "./ChampionshipScreen";
 
 export class TitleScreen extends Container implements AppScreen
 {
@@ -13,6 +14,7 @@ export class TitleScreen extends Container implements AppScreen
     private _title!: Sprite;
     private _flags!: Sprite;
     private _playBtn!: SecondaryButton;
+    private _championshipBtn!: SecondaryButton;
 
     private _topAnimContainer = new Container();
     private _bottomAnimContainer = new Container();
@@ -100,12 +102,29 @@ export class TitleScreen extends Container implements AppScreen
         this._playBtn.anchor.set(0.5);
 
         this._playBtn.x = designConfig.content.width / 2;
-        this._playBtn.y = designConfig.content.height / 2 + 100;
+        this._playBtn.y = designConfig.content.height / 2 + 80;
 
         this._playBtn.onPress.connect(() => {
             navigation.gotoScreen(GameScreen);
         });
 
-        this._bottomAnimContainer.addChild(this._playBtn);
+        this._championshipBtn = new SecondaryButton({
+            text: 'CHAMPIONSHIP',
+            tint: 0xffc42c,
+            textStyle: {
+                fontSize: 32
+            }
+        })
+
+        this._championshipBtn.anchor.set(0.5);
+
+        this._championshipBtn.x = designConfig.content.width / 2;
+        this._championshipBtn.y = designConfig.content.height / 2 + 140;
+
+        this._championshipBtn.onPress.connect(() => {
+            navigation.gotoScreen(ChampionshipScreen);
+        });
+
+        this._bottomAnimContainer.addChild(this._playBtn, this._championshipBtn);
     }
 }

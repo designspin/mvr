@@ -7,6 +7,10 @@ import { designConfig } from "../../designConfig";
 import { HudSystem } from "../HudSystem";
 import { navigation } from "../../../navigation";
 import { LapCompletionOverlay } from "../../../screens/overlays/LapCompletionOverlay";
+import { ChampionshipManager } from "../../championship/ChampionshipManager";
+import { RaceResultsScreen } from "../../../screens/RaceResultsScreen";
+import { ChampionshipScreen } from "../../../screens/ChampionshipScreen";
+import { CarSystem } from "../CarSystem/CarSystem";
 
 export class RacingState implements SystemState<PlayerSystem> {
     private _totalLaps: number = 3;
@@ -35,7 +39,6 @@ export class RacingState implements SystemState<PlayerSystem> {
 
         this.updateVisuals(ctx, interpolatedX, interpolatedZ);
         
-        // Update lap timing if racing
         if (ctx.racing) {
             ctx.updateLapTime();
         }
@@ -67,7 +70,6 @@ export class RacingState implements SystemState<PlayerSystem> {
         ctx.game.camera.position = increase(ctx.game.camera.position, dt * ctx.speed, track.trackLength);
         const playerSegment = ctx.segment;
 
-        // Calculate totalRaceDistance consistently with AI cars
         ctx.percent = percentRemaining(ctx.z, track.segmentLength);
         ctx.totalRaceDistance = (Math.max(0, ctx.lap + 1) * track.segments.length + playerSegment.index + ctx.percent) * track.segmentLength;
 
@@ -103,7 +105,7 @@ export class RacingState implements SystemState<PlayerSystem> {
         }
 
         if (ctx.overrevving) {
-            const overrevDecel = ctx.decel * 4; // Overrevving deceleration
+            const overrevDecel = ctx.decel * 4;
             ctx.speed = accelerate(ctx.speed, overrevDecel, dt);
 
             if (ctx.speed <= ctx.maxSpeed) {
@@ -228,23 +230,39 @@ export class RacingState implements SystemState<PlayerSystem> {
             const hud = ctx.game.systems.get(HudSystem);
             
             if (ctx.lap === -1) {
-                // First finish line crossing: START lap 1 (but display shows 0 completed laps)
-                ctx.lap = 0; // Now we're in lap 1, but 0 laps completed
+                ctx.lap = 0; 
                 ctx.startLapTiming();
-                hud.setLapCount(ctx.lap); // Shows "Laps: 0/3"
+                hud.setLapCount(ctx.lap);
                 console.log(`Started lap 1 (0 laps completed)`);
             } else {
-                // Subsequent finish line crossings: COMPLETE current lap and start next
                 const lapTime = ctx.completeLap();
-                ctx.lap++; // Increment completed laps
-                const completedLapNumber = ctx.lap; // This is now the number of completed laps
+                ctx.lap++; 
+                const completedLapNumber = ctx.lap; 
                 
-                console.log(`Completed lap ${completedLapNumber}! Time: ${lapTime}`);
+                console.log(`Completed lap ${completedLapNumber} (${ctx.lap}/${this._totalLaps} laps completed)`);
                 
-                // Show completion overlay for the lap we just finished
+                if (ctx.lap >= this._totalLaps && ctx.racing) {
+                    console.log(`Race complete! Completed ${ctx.lap} laps out of ${this._totalLaps}`);
+                    if (lapTime > 0) {
+                        const lapData = ctx.getLapTimingData();
+                        lapData.lapNumber = completedLapNumber; 
+                        
+                        navigation.showOverlay(LapCompletionOverlay, {
+                            lapData,
+                            callback: () => {
+                                navigation.hideOverlay();
+                                this.completeRace(ctx);
+                            }
+                        });
+                    } else {
+                        this.completeRace(ctx);
+                    }
+                    return; 
+                }
+                
                 if (lapTime > 0) {
                     const lapData = ctx.getLapTimingData();
-                    lapData.lapNumber = completedLapNumber; // Display completed lap number
+                    lapData.lapNumber = completedLapNumber; 
                     
                     navigation.showOverlay(LapCompletionOverlay, {
                         lapData,
@@ -254,21 +272,141 @@ export class RacingState implements SystemState<PlayerSystem> {
                     });
                 }
                 
-                hud.setLapCount(ctx.lap); // Update HUD to show completed laps
+                hud.setLapCount(ctx.lap); 
                 
-                // Start timing for the next lap (unless race is complete)
                 if (ctx.lap < this._totalLaps) {
                     ctx.startLapTiming();
-                    console.log(`Started lap ${ctx.lap + 1} (${ctx.lap} laps completed)`);
                 }
             }
         }
 
-        if (ctx.lap >= this._totalLaps) {
-            // Race is complete - transition to end state
-            console.log('Race complete!');
-        }
-
         ctx.previousSegment = playerSegment;
+    }
+
+    private completeRace(ctx: PlayerSystem) {
+        ctx.racing = false;
+        
+        const championshipManager = ChampionshipManager.getInstance();
+        
+        const carSystem = ctx.game.systems.get(CarSystem);
+        
+        const raceResults = this.collectRaceResults(ctx, carSystem);
+        
+        championshipManager.completeRace(raceResults);
+        
+        const raceResultsData = championshipManager.getLastRaceResults();
+        navigation.gotoScreen(RaceResultsScreen, {
+            raceResults: raceResultsData,
+            callback: () => {
+                navigation.gotoScreen(ChampionshipScreen);
+            }
+        });
+    }
+
+    private collectRaceResults(ctx: PlayerSystem, carSystem: CarSystem): Array<{driverId: string, position: number, lapTime: number, bestLapTime: number}> {
+        const results: Array<{driverId: string, position: number, lapTime: number, bestLapTime: number}> = [];
+        
+        const playerTotalTime = ctx.lapTimes.reduce((sum, time) => sum + time, 0);
+        const playerBestLapTime = Math.min(...ctx.lapTimes);
+        
+        const aiDrivers = carSystem.cars.filter((car: any) => car.driver);
+        
+        const allRacers = [...aiDrivers, ctx];
+        
+        allRacers.sort((a, b) => {
+            return a.racePosition - b.racePosition;
+        });
+        
+        console.log(`Final race positions from race position system:`);
+        allRacers.forEach((racer) => {
+            const racerName = racer === ctx ? ctx.driver?.name : (racer as any).driver?.name;
+            console.log(`Position ${racer.racePosition}: ${racerName} (lap ${racer.lap})`);
+        });
+        
+        const averageLapTime = playerTotalTime / this._totalLaps;
+        
+        allRacers.forEach((racer) => {
+            let finishTime: number;
+            let bestLapTime: number;
+            const finalPosition = racer.racePosition;
+            
+            if (racer === ctx) {
+                finishTime = playerTotalTime;
+                bestLapTime = playerBestLapTime;
+            } else {
+                const car = racer as any;
+                const driver = car.driver;
+                
+                const aiCompletedRace = car.lap >= this._totalLaps;
+                
+                const positionGap = finalPosition - ctx.racePosition;
+                
+                let timeGapPerPosition: number;
+                if (Math.abs(positionGap) <= 1) {
+                    timeGapPerPosition = 0.5 + Math.random() * 1.0; 
+                } else if (Math.abs(positionGap) <= 3) {
+                    timeGapPerPosition = 1.0 + Math.random() * 2.0; 
+                } else {
+                    timeGapPerPosition = 2.0 + Math.random() * 3.0; 
+                }
+                
+                let profileModifier = 1.0;
+                switch (driver.aiProfile) {
+                    case 'AGGRESSIVE':
+                        profileModifier = 0.98 + Math.random() * 0.04; 
+                        break;
+                    case 'BALANCED':
+                        profileModifier = 0.99 + Math.random() * 0.03; 
+                        break;
+                    case 'CAUTIOUS':
+                        profileModifier = 1.01 + Math.random() * 0.03; 
+                        break;
+                }
+                
+                if (aiCompletedRace) {
+                    if (positionGap < 0) {
+                        finishTime = playerTotalTime - (Math.abs(positionGap) * timeGapPerPosition);
+                    } else if (positionGap > 0) {
+                        finishTime = playerTotalTime + (positionGap * timeGapPerPosition);
+                    } else {
+                        finishTime = playerTotalTime + (Math.random() - 0.5) * 0.1;
+                    }
+                    
+                    finishTime *= profileModifier;
+                    
+                    const minimumRaceTime = averageLapTime * this._totalLaps * 0.85;
+                    finishTime = Math.max(finishTime, minimumRaceTime);
+                } else {
+                    const remainingLaps = this._totalLaps - car.lap;
+                    const estimatedLapTime = (averageLapTime * profileModifier) * (1.2 + Math.random() * 0.3);
+                    finishTime = playerTotalTime + (remainingLaps * estimatedLapTime) + (Math.random() * 10);
+                }
+                
+                const lapTimeModifier = profileModifier * (0.96 + Math.random() * 0.08);
+                bestLapTime = playerBestLapTime * lapTimeModifier;
+            }
+            
+            results.push({
+                driverId: racer === ctx ? ctx.driver!.id : (racer as any).driver.id,
+                position: finalPosition, 
+                lapTime: finishTime,
+                bestLapTime: bestLapTime
+            });
+        });
+        
+        
+        results.sort((a, b) => a.position - b.position);
+        
+        results.forEach(result => {
+            let driverName: string;
+            if (result.driverId === ctx.driver?.id) {
+                driverName = ctx.driver.name;
+            } else {
+                const aiCar = carSystem.cars.find((car: any) => car.driver?.id === result.driverId);
+                driverName = aiCar?.driver?.name || result.driverId;
+            }
+        });
+        
+        return results;
     }
 }

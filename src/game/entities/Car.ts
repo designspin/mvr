@@ -3,6 +3,7 @@ import { Game } from "..";
 import { TrackSystem } from "../systems/TrackSystem";
 import { ISegment } from "../../utilities";
 import { IRacer } from "../../utilities/IRacer";
+import { Driver, getDriverByCarNumber, getAIDrivers } from "../championship/Driver";
 
 
 
@@ -65,21 +66,30 @@ export default class CarEntity extends Sprite implements Car
     private _competingWith: Car | null = null;
     private _racingLine: number = 0;
 
-    public targetSteeringState: number = 0; // -2 (hard left) to +2 (hard right)
+    public targetSteeringState: number = 0; 
     public currentSteeringState: number = 0;
     public readonly STEERING_SMOOTHING = 0.2;
 
     public framesSinceDirectionChange: number = 0;
-    public lastAvoidanceDirection: number = 0; // -1 for left, 1 for right, 0 for no direction
+    public lastAvoidanceDirection: number = 0; 
     public totalRaceDistance: number = 0;
     
-    constructor(spriteNum: string, game: Game, z: number, offset: number)
+    public driver: Driver | null = null;
+
+    constructor(spriteNum: string, game: Game, z: number, offset: number, aiCarIndex?: number)
     {
         super(game.sheet?.textures[`car-${spriteNum}-straight`]);
         this._game = game;
         this._z = z;
         this._offset = offset;
         this._spriteNum = spriteNum;
+
+        if (aiCarIndex !== undefined) {
+            const aiDrivers = getAIDrivers();
+            this.driver = aiDrivers[aiCarIndex % aiDrivers.length] || null;
+        } else {
+            this.driver = getDriverByCarNumber(spriteNum) || null;
+        }
 
         const baseSpeed = 50;
         const minSpeed = baseSpeed * 0.95;

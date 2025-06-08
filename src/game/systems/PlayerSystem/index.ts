@@ -11,6 +11,7 @@ import Keyboard from '../../keyboard';
 import { sound } from "@pixi/sound";
 import { IRacer } from "../../../utilities/IRacer";
 import { WaitingState } from "./WaitingState";
+import { Driver, getPlayerDriver } from "../../championship/Driver";
 
 
 export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSystem> {
@@ -27,6 +28,8 @@ export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSy
     public racing: boolean = false;
     public lap: number = -1;
     private _totalRaceDistance: number = 0;
+
+    public driver: Driver;
 
     public lapStartTime: number = 0;
     public currentLapTime: number = 0;
@@ -52,7 +55,9 @@ export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSy
     public gearChangeRequest: boolean = false;
     public overrevving: boolean = false;
 
-    constructor(private _state: SystemState<PlayerSystem> = new WaitingState()) {}
+    constructor(private _state: SystemState<PlayerSystem> = new WaitingState()) {
+        this.driver = getPlayerDriver();
+    }
 
     setState(state: SystemState<PlayerSystem>) {
         this._state = state;
@@ -219,7 +224,7 @@ export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSy
         const objectSystem = this.game.systems.get(ObjectSystem);
         objectSystem.signals.onLightsReady.connect(() => { 
             this.racing = true;
-            this.startLapTiming(); // Start timing the first lap
+            this.startLapTiming();
             this.switchState();
         });
     }

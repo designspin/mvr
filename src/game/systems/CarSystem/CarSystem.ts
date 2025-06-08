@@ -49,16 +49,29 @@ export class CarSystem implements System, SystemStateMachine<CarSystem> {
     public resetCars() {
         const track = this.game.systems.get(TrackSystem);
         const startPositions = track.segments.filter(s => s.isStartPositionSegment);
-        const spriteNums = ["02", "03", "04"];
+        
+        
+        
+    const availableCarSprites = ["02", "03", "04"];
+        let spriteIndex = 0;
+        let aiCarCount = 0; 
 
         for (let i = 0; i < startPositions.length; i++) {
-            const spriteNum = spriteNums[Math.floor(Math.random() * spriteNums.length)];
-            const spriteNum2 = spriteNums[Math.floor(Math.random() * spriteNums.length)];
-            const car = new Car(spriteNum, this.game, startPositions[i].index * gameConfig.trackData.level1.segLength, -0.7);
-            const car2 = new Car(spriteNum2, this.game, startPositions[i].index * gameConfig.trackData.level1.segLength, 0.9);
+            const spriteNum = availableCarSprites[spriteIndex % availableCarSprites.length];
+            spriteIndex++;
+            
+            const car = new Car(spriteNum, this.game, startPositions[i].index * gameConfig.trackData.level1.segLength, -0.7, aiCarCount);
             this.cars.push(car);
+            aiCarCount++;
+            console.log(`[CarSystem] Created car ${this.cars.length} at position ${i} with sprite ${spriteNum} and driver ${car.driver?.name || 'Unknown'}`);
+            
             if (i > 0) {
+                const spriteNum2 = availableCarSprites[spriteIndex % availableCarSprites.length];
+                spriteIndex++;
+                
+                const car2 = new Car(spriteNum2, this.game, startPositions[i].index * gameConfig.trackData.level1.segLength, 0.9, aiCarCount);
                 this.cars.push(car2);
+                aiCarCount++;
                 startPositions[i].cars = [car, car2];
                 track.view.addChild(car, car2);
             } else {
@@ -71,21 +84,18 @@ export class CarSystem implements System, SystemStateMachine<CarSystem> {
     public reset() {
         const track = this.game.systems.get(TrackSystem);
 
-        // 1. Remove all car sprites from the track's view
         for (const car of this.cars) {
             if (car.parent) {
                 car.parent.removeChild(car);
             }
         }
 
-        // 2. Clear car references from track segments
         for (const segment of track.segments) {
             if (segment.cars && segment.cars.length > 0) {
                 segment.cars = [];
             }
         }
 
-        // 3. Reset the cars array
         this.cars = [];
 
         this.setState(new IdleState());

@@ -23,6 +23,20 @@ globalThis.__PIXI_APP__ = app;
 
 export let hasInteracted = false;
 
+function preventZoom(e: TouchEvent): void {
+  const t2 = e.timeStamp;
+  const t1 = (e.currentTarget as HTMLElement).dataset.lastTouch ? 
+    Number((e.currentTarget as HTMLElement).dataset.lastTouch) : t2;
+  const dt = t2 - t1;
+  const fingers = e.touches.length;
+  (e.currentTarget as HTMLElement).dataset.lastTouch = t2.toString();
+
+  if (!dt || dt > 500 || fingers > 1) return; // not double-tap
+
+  e.preventDefault();
+  (e.target as HTMLElement).click();
+}
+
 async function init()
 {
     navigation.init();
@@ -36,6 +50,8 @@ async function init()
     
     document.body.appendChild(app.canvas);
 
+    app.canvas.addEventListener('touchstart', preventZoom, { passive: false });
+    
     await initAssets();
 
     storage.readyStorage();

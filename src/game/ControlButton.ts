@@ -1,4 +1,5 @@
 import { Container, Graphics, Sprite } from "pixi.js";
+import { Haptics, ImpactStyle } from "@capacitor/haptics";
 
 export interface ControlButtonChangeEvent
 {
@@ -64,6 +65,14 @@ export class ControlButton extends Container
         {
             that.button.alpha = 1;
             that.settings.onChange?.({ state: ControlButtonState.PRESSED });
+
+            try {
+                Haptics.impact({ style: ImpactStyle.Light });
+            } catch {
+                if(navigator.vibrate) {
+                    navigator.vibrate(15);
+                }
+            }
         }
 
         function onPointerUp()
@@ -74,5 +83,7 @@ export class ControlButton extends Container
 
         this.on('pointerdown', onPointerDown);
         this.on('pointerup', onPointerUp);
+        this.on('pointerupoutside', onPointerUp);
+        this.on('pointerout', onPointerUp);
     }
 }

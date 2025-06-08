@@ -6,7 +6,7 @@ import type { AppScreen } from "../navigation";
 export class GameScreen extends Container implements AppScreen
 {
     public static SCREEN_ID = 'game';
-    public static assetBundles = ['images/game-screen'];
+    public static assetBundles = ['game-screen'];
 
     private readonly _game: Game;
 
@@ -19,7 +19,7 @@ export class GameScreen extends Container implements AppScreen
     }
     public async show()
     {
-        this._game.awake();
+        await this._game.awake();
 
         this.alpha = 0;
 

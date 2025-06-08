@@ -15,4 +15,5 @@ export const i18nDict = {
     resultsTitle: 'YOUR SCORE!',
     resultsScoreTitle: 'FINAL SCORE',
     resultsHighscoreTitle: 'HIGHSCORE',
+    lapComplete: 'LAP COMPLETE',
 };

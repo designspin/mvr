@@ -19,15 +19,18 @@ export class SecondaryButton extends FancyButton
 {
     constructor(options?: SecondaryButtonOptions)
     {
-        const text = new Text(options?.text ?? '', {
-            fill: 0x000000,
-            fontFamily: 'Bungee Regular',
-            fontWeight: 'bold',
-            align: 'center',
-            fontSize: 40,
-            // Allow custom text style to overwrite predefined options
-            ...options?.textStyle,
-        });
+        const text = new Text({
+            text: options?.text ?? '',
+            style: {
+                fill: 0x000000,
+                fontFamily: 'Bungee Regular',
+                fontWeight: 'bold',
+                align: 'center',
+                fontSize: 40,
+                // Allow custom text style to overwrite predefined options
+                ...options?.textStyle,
+            }
+        })
 
         super({
             defaultView: 'button-flat',

@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Track Builder</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; height: 100vh; }
+        #sidebar { width: 250px; padding: 10px; background: #f0f0f0; overflow-y: auto; }
+        #main { flex: 1; display: flex; flex-direction: column; }
+        #track-view { flex: 1; position: relative; overflow: hidden; background: #e0e0e0; }
+        #segment-list { flex: 0 0 150px; overflow-y: auto; border-top: 1px solid #ccc; padding: 10px; }
+        .segment-item { margin-bottom: 3px; padding: 5px; background: #f5f5f5; display: flex; justify-content: space-between; }
+        .segment-item:hover { background: #e5e5e5; }
+        .segment-actions { display: flex; }
+        .btn { margin: 5px; padding: 5px 10px; cursor: pointer; }
+        .segment-btn { display: block; width: 100%; margin: 5px 0; padding: 10px; text-align: left; cursor: pointer; }
+        .segment-btn:hover { background: #e0e0e0; }
+        .active { background: #d0e8ff; }
+        canvas { display: block; }
+        h3 { margin: 10px 0 5px 0; }
+        .param-group { margin: 5px 0; }
+        .param-group label { display: block; margin-bottom: 3px; }
+        .track-name { width: 100%; padding: 5px; margin: 5px 0; }
+        .color-section { margin: 10px 0; border: 1px solid #ddd; padding: 10px; border-radius: 5px; background: #fafafa; }
+        .color-section h4 { margin: 15px 0 5px 0; font-size: 14px; color: #444; border-bottom: 1px solid #eee; padding-bottom: 3px; }
+        .color-section input[type="color"] { width: 100%; height: 30px; padding: 2px; border: 1px solid #ccc; cursor: pointer; border-radius: 3px; }
+        .color-section input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; border-radius: 3px; }
+        .color-section input[type="color"]::-webkit-color-swatch { border: none; border-radius: 3px; }
+        .color-section .param-group { margin: 8px 0; }
+        .color-section .param-group label { font-size: 12px; color: #555; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <div id="sidebar">
+        <h2>Track Builder</h2>
+        <input type="text" class="track-name" id="track-name" placeholder="Track Name" value="Custom Track">
+        
+        <h3>Add Segments:</h3>
+        <button class="segment-btn" data-type="straight">Straight Road</button>
+        <button class="segment-btn" data-type="curve-easy-right">Easy Right Curve</button>
+        <button class="segment-btn" data-type="curve-medium-right">Medium Right Curve</button>
+        <button class="segment-btn" data-type="curve-hard-right">Hard Right Curve</button>
+        <button class="segment-btn" data-type="curve-easy-left">Easy Left Curve</button>
+        <button class="segment-btn" data-type="curve-medium-left">Medium Left Curve</button>
+        <button class="segment-btn" data-type="curve-hard-left">Hard Left Curve</button>
+        <button class="segment-btn" data-type="hill-up">Hill Up</button>
+        <button class="segment-btn" data-type="hill-down">Hill Down</button>
+        <button class="segment-btn" data-type="s-curves">S Curves</button>
+        <button class="segment-btn" data-type="bumps">Bumps</button>
+        <button class="segment-btn" data-type="low-rolling-hills">Low Rolling Hills</button>
+        
+        <h3>Segment Length:</h3>
+        <div class="param-group">
+            <select id="length-select">
+                <option value="25">Short (25)</option>
+                <option value="50">Medium (50)</option>
+                <option value="100" selected>Long (100)</option>
+            </select>
+        </div>
+        
+        <h3>Track Colors:</h3>
+        <div class="color-section">
+            <div class="param-group">
+                <label for="sky-color">Sky Color:</label>
+                <input type="color" id="sky-color" value="#72d7ee">
+            </div>
+            <div class="param-group">
+                <label for="tree-color">Tree Color:</label>
+                <input type="color" id="tree-color" value="#005108">
+            </div>
+            <div class="param-group">
+                <label for="fog-color">Fog Color:</label>
+                <input type="color" id="fog-color" value="#005108">
+            </div>
+            
+            <h4>Light Segments:</h4>
+            <div class="param-group">
+                <label for="light-road-color">Road:</label>
+                <input type="color" id="light-road-color" value="#6b6b6b">
+            </div>
+            <div class="param-group">
+                <label for="light-grass-color">Grass:</label>
+                <input type="color" id="light-grass-color" value="#319612">
+            </div>
+            <div class="param-group">
+                <label for="light-rumble-color">Rumble:</label>
+                <input type="color" id="light-rumble-color" value="#d3d3d3">
+            </div>
+            <div class="param-group">
+                <label for="light-lane-color">Lane Markers:</label>
+                <input type="color" id="light-lane-color" value="#cccccc">
+            </div>
+            
+            <h4>Dark Segments:</h4>
+            <div class="param-group">
+                <label for="dark-road-color">Road:</label>
+                <input type="color" id="dark-road-color" value="#696969">
+            </div>
+            <div class="param-group">
+                <label for="dark-grass-color">Grass:</label>
+                <input type="color" id="dark-grass-color" value="#3cb816">
+            </div>
+            <div class="param-group">
+                <label for="dark-rumble-color">Rumble:</label>
+                <input type="color" id="dark-rumble-color" value="#94120a">
+            </div>
+            
+            <h4>Start/Finish:</h4>
+            <div class="param-group">
+                <label for="start-road-color">Road:</label>
+                <input type="color" id="start-road-color" value="#696969">
+            </div>
+            <div class="param-group">
+                <label for="start-grass-color">Grass:</label>
+                <input type="color" id="start-grass-color" value="#3cb816">
+            </div>
+            <div class="param-group">
+                <label for="start-rumble-color">Rumble:</label>
+                <input type="color" id="start-rumble-color" value="#94120a">
+            </div>
+            
+            <div class="param-group">
+                <button id="reset-colors" class="btn">Reset to Defaults</button>
+            </div>
+        </div>
+        
+        <h3>Actions:</h3>
+        <div>
+            <button id="clear-track" class="btn">Clear Track</button>
+            <button id="save-track" class="btn">Save Track</button>
+            <button id="load-track" class="btn">Load Track</button>
+            <button id="export-track" class="btn">Export JSON</button>
+            <button id="import-json" class="btn">Import from JSON</button>
+        </div>
+        
+        <div>
+            <h3>Output:</h3>
+            <textarea id="output" rows="8" style="width: 95%"></textarea>
+        </div>
+    </div>
+    
+    <div id="main">
+        <div id="track-view">
+            <canvas id="canvas"></canvas>
+        </div>
+        <div id="segment-list">
+            <h3>Track Segments:</h3>
+            <div id="segments-container"></div>
+        </div>
+    </div>
+
+    <script>
+        // Constants matching your game config
+        const ROAD = {
+            LENGTH: { NONE: 0, SHORT: 25, MEDIUM: 50, LONG: 100 },
+            HILL: { NONE: 0, LOW: 20, MEDIUM: 40, HIGH: 60 },
+            CURVE: { NONE: 0, EASY: 2, MEDIUM: 4, HARD: 6 }
+        };
+        
+        // Track segment definitions
+        const SEGMENT_TYPES = {
+            'straight': {
+                name: 'Straight Road',
+                func: 'addStraight',
+                getParams: length => [length]
+            },
+            'curve-easy-right': {
+                name: 'Easy Right Curve',
+                func: 'addCurve',
+                getParams: length => [length, ROAD.CURVE.EASY]
+            },
+            'curve-medium-right': {
+                name: 'Medium Right Curve',
+                func: 'addCurve',
+                getParams: length => [length, ROAD.CURVE.MEDIUM]
+            },
+            'curve-hard-right': {
+                name: 'Hard Right Curve', 
+                func: 'addCurve',
+                getParams: length => [length, ROAD.CURVE.HARD]
+            },
+            'curve-easy-left': {
+                name: 'Easy Left Curve',
+                func: 'addCurve',
+                getParams: length => [length, -ROAD.CURVE.EASY]
+            },
+            'curve-medium-left': {
+                name: 'Medium Left Curve',
+                func: 'addCurve',
+                getParams: length => [length, -ROAD.CURVE.MEDIUM]
+            },
+            'curve-hard-left': {
+                name: 'Hard Left Curve',
+                func: 'addCurve',
+                getParams: length => [length, -ROAD.CURVE.HARD]
+            },
+            'hill-up': {
+                name: 'Hill Up',
+                func: 'addHill',
+                getParams: length => [length, ROAD.HILL.MEDIUM]
+            },
+            'hill-down': {
+                name: 'Hill Down',
+                func: 'addHill',
+                getParams: length => [length, -ROAD.HILL.MEDIUM]
+            },
+            's-curves': {
+                name: 'S Curves',
+                func: 'addSCurves',
+                getParams: () => []
+            },
+            'bumps': {
+                name: 'Bumps',
+                func: 'addBumps',
+                getParams: () => []
+            },
+            'low-rolling-hills': {
+                name: 'Low Rolling Hills',
+                func: 'addLowRollingHills',
+                getParams: () => []
+            }
+        };
+        
+        class TrackEditor {
+            constructor() {
+                this.segments = [];
+                this.canvas = document.getElementById('canvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.trackPosition = { x: 400, y: 300, direction: 0 };
+                this.setupEventListeners();
+                this.resizeCanvas();
+            }
+            
+            addSegment(type) {
+                const length = parseInt(document.getElementById('length-select').value) || ROAD.LENGTH.LONG;
+                const segmentDef = SEGMENT_TYPES[type];
+                
+                if (!segmentDef) return;
+                
+                const segment = {
+                    type: type,
+                    name: segmentDef.name,
+                    func: segmentDef.func,
+                    params: segmentDef.getParams(length),
+                    length: length
+                };
+                
+                this.segments.push(segment);
+                this.updateSegmentList();
+                this.renderTrack();
+            }
+            
+            removeSegment(index) {
+                this.segments.splice(index, 1);
+                this.updateSegmentList();
+                this.renderTrack();
+            }
+            
+            moveSegmentUp(index) {
+                if (index > 0) {
+                    [this.segments[index-1], this.segments[index]] = 
+                        [this.segments[index], this.segments[index-1]];
+                    this.updateSegmentList();
+                    this.renderTrack();
+                }
+            }
+            
+            moveSegmentDown(index) {
+                if (index < this.segments.length - 1) {
+                    [this.segments[index], this.segments[index+1]] = 
+                        [this.segments[index+1], this.segments[index]];
+                    this.updateSegmentList();
+                    this.renderTrack();
+                }
+            }
+            
+            clearTrack() {
+                if (confirm('Clear the entire track?')) {
+                    this.segments = [];
+                    this.updateSegmentList();
+                    this.renderTrack();
+                }
+            }
+            
+            exportTrack() {
+                const trackName = document.getElementById('track-name').value || 'Custom Track';
+                
+                // Helper function to convert hex color to integer
+                const hexToInt = (hex) => parseInt(hex.replace('#', ''), 16);
+                
+                // Get all color values
+                const colors = {
+                    sky: hexToInt(document.getElementById('sky-color').value),
+                    tree: hexToInt(document.getElementById('tree-color').value),
+                    fog: hexToInt(document.getElementById('fog-color').value),
+                    light: {
+                        road: hexToInt(document.getElementById('light-road-color').value),
+                        grass: hexToInt(document.getElementById('light-grass-color').value),
+                        rumble: hexToInt(document.getElementById('light-rumble-color').value),
+                        lane: hexToInt(document.getElementById('light-lane-color').value)
+                    },
+                    dark: {
+                        road: hexToInt(document.getElementById('dark-road-color').value),
+                        grass: hexToInt(document.getElementById('dark-grass-color').value),
+                        rumble: hexToInt(document.getElementById('dark-rumble-color').value)
+                    },
+                    start: {
+                        road: hexToInt(document.getElementById('start-road-color').value),
+                        grass: hexToInt(document.getElementById('start-grass-color').value),
+                        rumble: hexToInt(document.getElementById('start-rumble-color').value)
+                    },
+                    finish: {
+                        road: hexToInt(document.getElementById('start-road-color').value),
+                        grass: hexToInt(document.getElementById('start-grass-color').value),
+                        rumble: hexToInt(document.getElementById('start-rumble-color').value)
+                    }
+                };
+                
+                const output = {
+                    name: trackName,
+                    roadWidth: 1200,
+                    segLength: 200,
+                    rumbleLength: 4,
+                    lanes: 3,
+                    colors: colors,
+                    track: this.segments.map(seg => ({
+                        func: seg.func,
+                        params: seg.params
+                    }))
+                };
+                
+                document.getElementById('output').value = JSON.stringify(output, null, 2);
+            }
+            
+            saveTrack() {
+                const trackName = document.getElementById('track-name').value || 'Custom Track';
+                
+                // Helper function to convert hex color to integer
+                const hexToInt = (hex) => parseInt(hex.replace('#', ''), 16);
+                
+                const trackData = {
+                    name: trackName,
+                    segments: this.segments,
+                    colors: {
+                        sky: hexToInt(document.getElementById('sky-color').value),
+                        tree: hexToInt(document.getElementById('tree-color').value),
+                        fog: hexToInt(document.getElementById('fog-color').value),
+                        light: {
+                            road: hexToInt(document.getElementById('light-road-color').value),
+                            grass: hexToInt(document.getElementById('light-grass-color').value),
+                            rumble: hexToInt(document.getElementById('light-rumble-color').value),
+                            lane: hexToInt(document.getElementById('light-lane-color').value)
+                        },
+                        dark: {
+                            road: hexToInt(document.getElementById('dark-road-color').value),
+                            grass: hexToInt(document.getElementById('dark-grass-color').value),
+                            rumble: hexToInt(document.getElementById('dark-rumble-color').value)
+                        },
+                        start: {
+                            road: hexToInt(document.getElementById('start-road-color').value),
+                            grass: hexToInt(document.getElementById('start-grass-color').value),
+                            rumble: hexToInt(document.getElementById('start-rumble-color').value)
+                        }
+                    }
+                };
+                
+                localStorage.setItem('savedBlockTrack', JSON.stringify(trackData));
+                alert('Track saved to browser storage!');
+            }
+            
+            loadTrack() {
+                const savedTrack = localStorage.getItem('savedBlockTrack');
+                
+                if (savedTrack) {
+                    try {
+                        const trackData = JSON.parse(savedTrack);
+                        
+                        if (trackData.segments) {
+                            this.segments = trackData.segments;
+                            
+                            if (trackData.name) {
+                                document.getElementById('track-name').value = trackData.name;
+                            }
+                            
+                            // Load colors if they exist
+                            if (trackData.colors) {
+                                this.loadColors(trackData.colors);
+                            }
+                            
+                            this.updateSegmentList();
+                            this.renderTrack();
+                            alert('Track loaded!');
+                        }
+                    } catch (e) {
+                        alert('Error loading track: ' + e.message);
+                    }
+                } else {
+                    alert('No saved track found');
+                }
+            }
+            
+            importFromJSON() {
+                const jsonData = document.getElementById('output').value.trim();
+                
+                if (!jsonData) {
+                    alert('Please paste track JSON data into the output textarea first!');
+                    return;
+                }
+                
+                try {
+                    const trackData = JSON.parse(jsonData);
+                    
+                    // Validate required fields
+                    if (!trackData.track || !Array.isArray(trackData.track)) {
+                        alert('Invalid track data: missing or invalid track segments');
+                        return;
+                    }
+                    
+                    // Convert track segments to editor format
+                    this.segments = [];
+                    
+                    trackData.track.forEach(segment => {
+                        // Find the matching segment type
+                        let segmentType = null;
+                        let segmentLength = ROAD.LENGTH.LONG;
+                        
+                        // Map function names to segment types
+                        switch(segment.func) {
+                            case 'addStraight':
+                                segmentType = 'straight';
+                                segmentLength = segment.params[0] || ROAD.LENGTH.MEDIUM;
+                                break;
+                            case 'addCurve':
+                                const curve = segment.params[1] || 0;
+                                segmentLength = segment.params[0] || ROAD.LENGTH.MEDIUM;
+                                if (curve > 0) {
+                                    if (curve <= ROAD.CURVE.EASY) segmentType = 'curve-easy-right';
+                                    else if (curve <= ROAD.CURVE.MEDIUM) segmentType = 'curve-medium-right';
+                                    else segmentType = 'curve-hard-right';
+                                } else if (curve < 0) {
+                                    if (curve >= -ROAD.CURVE.EASY) segmentType = 'curve-easy-left';
+                                    else if (curve >= -ROAD.CURVE.MEDIUM) segmentType = 'curve-medium-left';
+                                    else segmentType = 'curve-hard-left';
+                                }
+                                break;
+                            case 'addHill':
+                                const height = segment.params[1] || 0;
+                                segmentLength = segment.params[0] || ROAD.LENGTH.MEDIUM;
+                                segmentType = height >= 0 ? 'hill-up' : 'hill-down';
+                                break;
+                            case 'addSCurves':
+                                segmentType = 's-curves';
+                                break;
+                            case 'addBumps':
+                                segmentType = 'bumps';
+                                break;
+                            case 'addLowRollingHills':
+                                segmentType = 'low-rolling-hills';
+                                break;
+                            default:
+                                console.warn(`Unknown segment function: ${segment.func}`);
+                                return;
+                        }
+                        
+                        if (segmentType && SEGMENT_TYPES[segmentType]) {
+                            const segmentDef = SEGMENT_TYPES[segmentType];
+                            this.segments.push({
+                                type: segmentType,
+                                name: segmentDef.name,
+                                func: segment.func,
+                                params: segment.params,
+                                length: segmentLength
+                            });
+                        }
+                    });
+                    
+                    // Load track name
+                    if (trackData.name) {
+                        document.getElementById('track-name').value = trackData.name;
+                    }
+                    
+                    // Load colors if they exist
+                    if (trackData.colors) {
+                        this.loadColors(trackData.colors);
+                    }
+                    
+                    this.updateSegmentList();
+                    this.renderTrack();
+                    alert(`Track "${trackData.name || 'Imported Track'}" loaded successfully!`);
+                    
+                } catch (e) {
+                    alert('Error parsing JSON: ' + e.message + '\n\nPlease make sure you pasted valid JSON data.');
+                }
+            }
+            
+            loadColors(colors) {
+                // Helper function to convert integer to hex color
+                const intToHex = (int) => '#' + int.toString(16).padStart(6, '0');
+                
+                if (colors.sky !== undefined) document.getElementById('sky-color').value = intToHex(colors.sky);
+                if (colors.tree !== undefined) document.getElementById('tree-color').value = intToHex(colors.tree);
+                if (colors.fog !== undefined) document.getElementById('fog-color').value = intToHex(colors.fog);
+                
+                if (colors.light) {
+                    if (colors.light.road !== undefined) document.getElementById('light-road-color').value = intToHex(colors.light.road);
+                    if (colors.light.grass !== undefined) document.getElementById('light-grass-color').value = intToHex(colors.light.grass);
+                    if (colors.light.rumble !== undefined) document.getElementById('light-rumble-color').value = intToHex(colors.light.rumble);
+                    if (colors.light.lane !== undefined) document.getElementById('light-lane-color').value = intToHex(colors.light.lane);
+                }
+                
+                if (colors.dark) {
+                    if (colors.dark.road !== undefined) document.getElementById('dark-road-color').value = intToHex(colors.dark.road);
+                    if (colors.dark.grass !== undefined) document.getElementById('dark-grass-color').value = intToHex(colors.dark.grass);
+                    if (colors.dark.rumble !== undefined) document.getElementById('dark-rumble-color').value = intToHex(colors.dark.rumble);
+                }
+                
+                if (colors.start) {
+                    if (colors.start.road !== undefined) document.getElementById('start-road-color').value = intToHex(colors.start.road);
+                    if (colors.start.grass !== undefined) document.getElementById('start-grass-color').value = intToHex(colors.start.grass);
+                    if (colors.start.rumble !== undefined) document.getElementById('start-rumble-color').value = intToHex(colors.start.rumble);
+                }
+            }
+            
+            updateSegmentList() {
+                const container = document.getElementById('segments-container');
+                container.innerHTML = '';
+                
+                if (this.segments.length === 0) {
+                    container.innerHTML = '<div class="segment-item">No segments added yet</div>';
+                    return;
+                }
+                
+                this.segments.forEach((segment, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'segment-item';
+                    
+                    const nameSpan = document.createElement('span');
+                    nameSpan.textContent = `${index + 1}. ${segment.name}`;
+                    if (segment.length) {
+                        nameSpan.textContent += ` (${segment.length})`;
+                    }
+                    
+                    const actions = document.createElement('div');
+                    actions.className = 'segment-actions';
+                    
+                    const upBtn = document.createElement('button');
+                    upBtn.textContent = '↑';
+                    upBtn.title = 'Move up';
+                    upBtn.onclick = () => this.moveSegmentUp(index);
+                    
+                    const downBtn = document.createElement('button');
+                    downBtn.textContent = '↓';
+                    downBtn.title = 'Move down';
+                    downBtn.onclick = () => this.moveSegmentDown(index);
+                    
+                    const removeBtn = document.createElement('button');
+                    removeBtn.textContent = '×';
+                    removeBtn.title = 'Remove';
+                    removeBtn.onclick = () => this.removeSegment(index);
+                    
+                    actions.appendChild(upBtn);
+                    actions.appendChild(downBtn);
+                    actions.appendChild(removeBtn);
+                    
+                    div.appendChild(nameSpan);
+                    div.appendChild(actions);
+                    
+                    container.appendChild(div);
+                });
+            }
+            
+            renderTrack() {
+                const ctx = this.ctx;
+                const width = this.canvas.width;
+                const height = this.canvas.height;
+                
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+                
+                // Draw grid
+                ctx.strokeStyle = '#ddd';
+                ctx.lineWidth = 1;
+                
+                for (let x = 0; x < width; x += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
+                }
+                
+                for (let y = 0; y < height; y += 50) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+                
+                // Start from center
+                let pos = { x: width / 2, y: height / 2, direction: 0 };
+                
+                // Draw track centerline
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 12;
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+                
+                // Draw track segments
+                const points = [{ x: pos.x, y: pos.y }];
+                
+                this.segments.forEach((segment, index) => {
+                    // Determine segment shape and draw it
+                    switch(segment.func) {
+                        case 'addStraight':
+                            pos = this.drawStraight(ctx, pos, segment.length);
+                            break;
+                            
+                        case 'addCurve':
+                            const curve = segment.params[1] || 0;
+                            pos = this.drawCurve(ctx, pos, segment.length, curve);
+                            break;
+                            
+                        case 'addHill':
+                            // Hills don't change direction in 2D view
+                            pos = this.drawStraight(ctx, pos, segment.length);
+                            break;
+                            
+                        case 'addSCurves':
+                            // Draw S-curve as sequence of opposite curves
+                            pos = this.drawCurve(ctx, pos, segment.length/2, -ROAD.CURVE.MEDIUM);
+                            pos = this.drawCurve(ctx, pos, segment.length/2, ROAD.CURVE.MEDIUM);
+                            break;
+                            
+                        case 'addBumps':
+                        case 'addLowRollingHills':
+                        default:
+                            // These are mostly height variations, draw as straight in 2D
+                            pos = this.drawStraight(ctx, pos, segment.length || ROAD.LENGTH.MEDIUM);
+                            break;
+                    }
+                    
+                    // Add point to track
+                    points.push({ x: pos.x, y: pos.y });
+                    
+                    // Add segment label
+                    const angle = pos.direction - Math.PI/2;
+                    const labelDist = 15;
+                    const labelX = pos.x + Math.cos(angle) * labelDist;
+                    const labelY = pos.y + Math.sin(angle) * labelDist;
+                    
+                    ctx.save();
+                    ctx.translate(labelX, labelY);
+                    ctx.rotate(pos.direction);
+                    ctx.fillStyle = '#000';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.font = '10px Arial';
+                    ctx.fillText((index + 1).toString(), 0, 0);
+                    ctx.restore();
+                });
+                
+                ctx.stroke();
+                
+                // Draw track edges
+                ctx.strokeStyle = '#777';
+                ctx.lineWidth = 16;
+                ctx.setLineDash([5, 8]);
+                
+                ctx.beginPath();
+                if (points.length > 0) {
+                    ctx.moveTo(points[0].x, points[0].y);
+                    for (let i = 1; i < points.length; i++) {
+                        ctx.lineTo(points[i].x, points[i].y);
+                    }
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+                
+                // Draw start point
+                if (points.length > 0) {
+                    ctx.fillStyle = '#0066ff';
+                    ctx.beginPath();
+                    ctx.arc(points[0].x, points[0].y, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.fillStyle = '#fff';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.font = 'bold 10px Arial';
+                    ctx.fillText('S', points[0].x, points[0].y);
+                }
+                
+                // Draw end point
+                if (points.length > 1) {
+                    ctx.fillStyle = '#ff3300';
+                    ctx.beginPath();
+                    ctx.arc(points[points.length-1].x, points[points.length-1].y, 8, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    ctx.fillStyle = '#fff';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.font = 'bold 10px Arial';
+                    ctx.fillText('E', points[points.length-1].x, points[points.length-1].y);
+                }
+            }
+            
+            drawStraight(ctx, pos, length) {
+                const scale = 0.5;  // Scale down lengths to fit in canvas
+                const distance = length * scale;
+                
+                const newX = pos.x + Math.cos(pos.direction) * distance;
+                const newY = pos.y + Math.sin(pos.direction) * distance;
+                
+                ctx.lineTo(newX, newY);
+                
+                return { x: newX, y: newY, direction: pos.direction };
+            }
+            
+            drawCurve(ctx, pos, length, curve) {
+                const scale = 0.5;  // Scale down lengths to fit in canvas
+                const distance = length * scale;
+                const segments = 10;  // Break curve into segments for smoother drawing
+                
+                let x = pos.x;
+                let y = pos.y;
+                let dir = pos.direction;
+                
+                // Total angle of turn in radians
+                const totalAngle = (curve / 6) * (Math.PI / 2);
+                
+                for (let i = 0; i < segments; i++) {
+                    // Turn a bit each segment
+                    dir += totalAngle / segments;
+                    
+                    // Move forward
+                    const stepDist = distance / segments;
+                    x += Math.cos(dir) * stepDist;
+                    y += Math.sin(dir) * stepDist;
+                    
+                    ctx.lineTo(x, y);
+                }
+                
+                return { x, y, direction: dir };
+            }
+            
+            setupEventListeners() {
+                // Segment buttons
+                document.querySelectorAll('.segment-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const type = btn.dataset.type;
+                        this.addSegment(type);
+                    });
+                });
+                
+                // Action buttons
+                document.getElementById('clear-track').addEventListener('click', () => this.clearTrack());
+                document.getElementById('export-track').addEventListener('click', () => this.exportTrack());
+                document.getElementById('save-track').addEventListener('click', () => this.saveTrack());
+                document.getElementById('load-track').addEventListener('click', () => this.loadTrack());
+                document.getElementById('import-json').addEventListener('click', () => this.importFromJSON());
+                document.getElementById('reset-colors').addEventListener('click', () => this.resetColors());
+                
+                // Canvas resizing
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+            
+            resetColors() {
+                // Default colors from the game
+                document.getElementById('sky-color').value = '#72d7ee';
+                document.getElementById('tree-color').value = '#005108';
+                document.getElementById('fog-color').value = '#005108';
+                document.getElementById('light-road-color').value = '#6b6b6b';
+                document.getElementById('light-grass-color').value = '#319612';
+                document.getElementById('light-rumble-color').value = '#d3d3d3';
+                document.getElementById('light-lane-color').value = '#cccccc';
+                document.getElementById('dark-road-color').value = '#696969';
+                document.getElementById('dark-grass-color').value = '#3cb816';
+                document.getElementById('dark-rumble-color').value = '#94120a';
+                document.getElementById('start-road-color').value = '#696969';
+                document.getElementById('start-grass-color').value = '#3cb816';
+                document.getElementById('start-rumble-color').value = '#94120a';
+            }
+            
+            resizeCanvas() {
+                const container = document.getElementById('track-view');
+                this.canvas.width = container.clientWidth;
+                this.canvas.height = container.clientHeight;
+                this.renderTrack();
+            }
+        }
+        
+        // Initialize track editor
+        const editor = new TrackEditor();
+        
+        // Initial render after a small delay to ensure container sizes are set
+        setTimeout(() => editor.resizeCanvas(), 100);
+    </script>
+</body>
+</html>

@@ -8,7 +8,7 @@ import { GameScreen } from "./GameScreen";
 export class TitleScreen extends Container implements AppScreen
 {
     public static SCREEN_ID = 'title';
-    public static assetBundles = ['images/title-screen'];
+    public static assetBundles = ['title-screen'];
 
     private _title!: Sprite;
     private _flags!: Sprite;

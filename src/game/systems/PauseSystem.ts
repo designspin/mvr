@@ -66,6 +66,7 @@ export class PauseSystem implements System
         if(state === 'resume') this.resume();
         else {
             navigation.gotoScreen(TitleScreen);
+            this.game.reset();
         }
     }
 }

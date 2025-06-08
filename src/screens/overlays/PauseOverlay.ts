@@ -74,7 +74,7 @@ type PauseCallback = (state: 'quit' | 'resume') => void;
 export class PauseOverlay extends Container implements AppScreen
 {
     public static SCREEN_ID = 'pause';
-    public static assetBundles = ['images/pause-overlay'];
+    public static assetBundles = ['pause-overlay'];
 
     private readonly _background: Graphics;
     private readonly _panel: PausePanel;

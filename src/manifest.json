@@ -5,85 +5,192 @@
       "assets": [
         {
           "alias": [
-            "audio/engine-loop.wav"
+            "audio/engine-loop.wav",
+            "engine-loop.wav"
           ],
           "src": [
-            "audio/engine-loop.mp3",
-            "audio/engine-loop.ogg"
-          ]
+            "audio/engine-loop.ogg",
+            "audio/engine-loop.mp3"
+          ],
+          "data": {
+            "tags": {}
+          }
         },
         {
           "alias": [
-            "audio/engine.wav"
+            "audio/engine.wav",
+            "engine.wav"
           ],
           "src": [
-            "audio/engine.mp3",
-            "audio/engine.ogg"
-          ]
+            "audio/engine.ogg",
+            "audio/engine.mp3"
+          ],
+          "data": {
+            "tags": {}
+          }
         },
         {
           "alias": [
-            "audio/red-light-chime.wav"
+            "audio/red-light-chime.wav",
+            "red-light-chime.wav"
           ],
           "src": [
-            "audio/red-light-chime.mp3",
-            "audio/red-light-chime.ogg"
-          ]
+            "audio/red-light-chime.ogg",
+            "audio/red-light-chime.mp3"
+          ],
+          "data": {
+            "tags": {}
+          }
         },
         {
           "alias": [
-            "audio/red-light-out.wav"
+            "audio/red-light-out.wav",
+            "red-light-out.wav"
           ],
           "src": [
-            "audio/red-light-out.mp3",
-            "audio/red-light-out.ogg"
-          ]
+            "audio/red-light-out.ogg",
+            "audio/red-light-out.mp3"
+          ],
+          "data": {
+            "tags": {}
+          }
         },
         {
           "alias": [
-            "audio/sounds_engine.wav"
+            "audio/sounds_engine.wav",
+            "sounds_engine.wav"
           ],
           "src": [
-            "audio/sounds_engine.mp3",
-            "audio/sounds_engine.ogg"
-          ]
+            "audio/sounds_engine.ogg",
+            "audio/sounds_engine.mp3"
+          ],
+          "data": {
+            "tags": {}
+          }
         },
         {
           "alias": [
+            "fonts/BebasNeue-Regular.ttf",
+            "BebasNeue-Regular.ttf"
+          ],
+          "src": [
             "fonts/BebasNeue-Regular.ttf"
           ],
-          "src": [
-            "fonts/BebasNeue-Regular.ttf"
-          ]
+          "data": {
+            "tags": {}
+          }
         },
         {
           "alias": [
-            "fonts/Bungee-Regular.ttf"
+            "fonts/Bungee-Regular.ttf",
+            "Bungee-Regular.ttf"
           ],
           "src": [
             "fonts/Bungee-Regular.ttf"
-          ]
+          ],
+          "data": {
+            "tags": {}
+          }
         },
         {
           "alias": [
-            "fonts/OpenSans-SemiBold.ttf"
+            "fonts/OpenSans-SemiBold.ttf",
+            "OpenSans-SemiBold.ttf"
           ],
           "src": [
             "fonts/OpenSans-SemiBold.ttf"
-          ]
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "tracks/track1.json",
+            "track1.json"
+          ],
+          "src": [
+            "tracks/track1.json"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "tracks/track2.json",
+            "track2.json"
+          ],
+          "src": [
+            "tracks/track2.json"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "tracks/track3.json",
+            "track3.json"
+          ],
+          "src": [
+            "tracks/track3.json"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "tracks/track4.json",
+            "track4.json"
+          ],
+          "src": [
+            "tracks/track4.json"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "tracks/track5.json",
+            "track5.json"
+          ],
+          "src": [
+            "tracks/track5.json"
+          ],
+          "data": {
+            "tags": {}
+          }
+        },
+        {
+          "alias": [
+            "tracks/track6.json",
+            "track6.json"
+          ],
+          "src": [
+            "tracks/track6.json"
+          ],
+          "data": {
+            "tags": {}
+          }
         }
       ]
     },
     {
-      "name": "images/game-screen",
+      "name": "game-screen",
       "assets": [
         {
           "alias": [
-            "images/game-screen/game-screen.json"
+            "images/game-screen",
+            "game-screen"
           ],
           "src": [
-            "images/game-screen/game-screen@1x.json",
-            "images/game-screen/game-screen@0.5x.json"
+            "images/game-screen@0.5x.webp.json",
+            "images/game-screen@0.5x.png.json",
+            "images/game-screen.webp.json",
+            "images/game-screen.png.json"
           ],
           "data": {
             "tags": {
@@ -95,13 +202,17 @@
       ]
     },
     {
-      "name": "images/pause-overlay",
+      "name": "pause-overlay",
       "assets": [
         {
           "alias": [
-            "images/pause-overlay/pause-panel.png"
+            "images/pause-overlay/pause-panel.png",
+            "pause-panel.png"
           ],
           "src": [
+            "images/pause-overlay/pause-panel@0.5x.webp",
+            "images/pause-overlay/pause-panel@0.5x.png",
+            "images/pause-overlay/pause-panel.webp",
             "images/pause-overlay/pause-panel.png"
           ],
           "data": {
@@ -113,15 +224,18 @@
       ]
     },
     {
-      "name": "images/preload",
+      "name": "preload",
       "assets": [
         {
           "alias": [
-            "images/preload/preload.json"
+            "images/preload",
+            "preload"
           ],
           "src": [
-            "images/preload/preload@1x.json",
-            "images/preload/preload@0.5x.json"
+            "images/preload@0.5x.webp.json",
+            "images/preload@0.5x.png.json",
+            "images/preload.webp.json",
+            "images/preload.png.json"
           ],
           "data": {
             "tags": {
@@ -133,15 +247,18 @@
       ]
     },
     {
-      "name": "images/title-screen",
+      "name": "title-screen",
       "assets": [
         {
           "alias": [
-            "images/title-screen/title-screen.json"
+            "images/title-screen",
+            "title-screen"
           ],
           "src": [
-            "images/title-screen/title-screen@1x.json",
-            "images/title-screen/title-screen@0.5x.json"
+            "images/title-screen@0.5x.webp.json",
+            "images/title-screen@0.5x.png.json",
+            "images/title-screen.webp.json",
+            "images/title-screen.png.json"
           ],
           "data": {
             "tags": {

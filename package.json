@@ -10,25 +10,18 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@assetpack/cli": "^0.8.0",
-    "@assetpack/core": "^0.8.0",
-    "@assetpack/plugin-compress": "^0.8.0",
-    "@assetpack/plugin-ffmpeg": "^0.8.0",
-    "@assetpack/plugin-json": "^0.8.0",
-    "@assetpack/plugin-manifest": "^0.8.0",
-    "@assetpack/plugin-mipmap": "^0.8.0",
-    "@assetpack/plugin-texture-packer": "^0.8.0",
-    "@assetpack/plugin-webfont": "^0.8.0",
+    "@assetpack/core": "^1.4.0",
+    "@capacitor/cli": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor/ios": "^7.0.0",
     "typescript": "^5.2.2",
     "vite": "^5.0.8"
   },
   "dependencies": {
-    "@capacitor/cli": "^5.6.0",
-    "@capacitor/core": "^5.6.0",
-    "@capacitor/ios": "^5.6.0",
+    "@capacitor/haptics": "^7.0.1",
     "@pixi/sound": "^6.0.0",
     "@pixi/ui": "^2.1.1",
-    "pixi.js": "^8.1.5",
-    "typed-signals": "^2.5.0"
+    "pixi.js": "^8.9.2",
+    "typed-signals": "^3.0.0"
   }
 }

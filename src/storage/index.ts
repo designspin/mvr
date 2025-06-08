@@ -31,8 +31,14 @@ export const storage = {
     getStorage(): StorageData
     {
         const data = localStorage.getItem(STORAGE_ID);
+
+        if (!data)
+        {
+            this.setStorage(DEFAULT_STORAGE);
+            return DEFAULT_STORAGE;
+        }
     
-        return data ? JSON.parse(data) : undefined;
+        return JSON.parse(data);
     },
     /**
      * Retrieves a specific value from the storage data.

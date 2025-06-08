@@ -1,4 +1,4 @@
-import { Color, Graphics, PointData } from "pixi.js";
+import { Graphics, PointData } from "pixi.js";
 import { TrackObject } from "../game/entities/TrackObject";
 import { designConfig } from "../game";
 import { isOdd } from ".";
@@ -71,6 +71,7 @@ export interface ISegment {
     isStartLineSegment?: "odd" | "even";
     isStartPositionSegment?: boolean;
     isFinishMarker?: boolean;
+    racingLineOffset?: number;
 }
 
 function polygon (ctx: Graphics, p1: PointData, p2: PointData, p3: PointData, p4: PointData, color: number)
@@ -308,7 +309,9 @@ export function renderSegment(
     segB: ISegmentPoint,
     fog: number,
     color: SegmentColor,
-    lanes: number
+    lanes: number,
+    racingLineOffset?: number,
+    nextRacingLineOffset?: number,
 ) {
     const r1 = rumbleWidth(segA.screen.width, lanes);
     const r2 = rumbleWidth(segB.screen.width, lanes);
@@ -377,6 +380,25 @@ export function renderSegment(
                 colorLane
             );
         }
+    }
+
+    if(racingLineOffset !== undefined && nextRacingLineOffset !== undefined)
+    {
+        const xA = A.x + (A.width * racingLineOffset);
+        const xB = B.x + (B.width * nextRacingLineOffset);
+
+        const racingLineWidth1 = laneMarkerWidth(A.width, 3) * 1.5;
+        const racingLineWidth2 = laneMarkerWidth(B.width, 3) * 1.5;
+
+        
+        polygon(
+            ctx,
+            { x: xA - racingLineWidth1, y: A.y },
+            { x: xA + racingLineWidth1, y: A.y },
+            { x: xB + racingLineWidth2, y: B.y },
+            { x: xB - racingLineWidth2, y: B.y },
+            0xFFFF00 
+        );
     }
 
     renderFog(ctx, fog, { x: 0, y: B.y }, { x: designConfig.content.width, y: A.y - B.y });

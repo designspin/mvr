@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Generated assets (built from raw-assets/)
+public/audio/
+public/fonts/
+public/images/
+public/tracks/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

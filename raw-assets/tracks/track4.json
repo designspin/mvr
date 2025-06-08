@@ -1,0 +1,89 @@
+{
+  "name": "Custom Track",
+  "roadWidth": 1200,
+  "segLength": 200,
+  "rumbleLength": 4,
+  "lanes": 3,
+  "track": [
+    {
+      "func": "addHill",
+      "params": [
+        100,
+        40
+      ]
+    },
+    {
+      "func": "addHill",
+      "params": [
+        100,
+        -40
+      ]
+    },
+    {
+      "func": "addCurve",
+      "params": [
+        100,
+        -6
+      ]
+    },
+    {
+      "func": "addHill",
+      "params": [
+        100,
+        40
+      ]
+    },
+    {
+      "func": "addHill",
+      "params": [
+        100,
+        -40
+      ]
+    },
+    {
+      "func": "addCurve",
+      "params": [
+        100,
+        -6
+      ]
+    },
+    {
+      "func": "addStraight",
+      "params": [
+        100
+      ]
+    },
+    {
+      "func": "addStraight",
+      "params": [
+        100
+      ]
+    },
+    {
+      "func": "addCurve",
+      "params": [
+        100,
+        -6
+      ]
+    },
+    {
+      "func": "addStraight",
+      "params": [
+        100
+      ]
+    },
+    {
+      "func": "addStraight",
+      "params": [
+        100
+      ]
+    },
+    {
+      "func": "addCurve",
+      "params": [
+        100,
+        -6
+      ]
+    }
+  ]
+}

@@ -6,7 +6,7 @@ import { animate, EasingFunctions, i18n } from "../utilities";
 export class LoadScreen extends Container implements AppScreen
 {
     public static SCREEN_ID = 'loader';
-    public static assetBundles = ['images/preload'];
+    public static assetBundles = ['preload'];
 
     private readonly _spinnerTop: Sprite;
     private readonly _spinnerBottom: Sprite;

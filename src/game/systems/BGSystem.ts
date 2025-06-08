@@ -26,12 +26,21 @@ export class BGSystem implements System {
         this._bgFront.forEach(sprite => {
             sprite.y = (designConfig.content.height / 4) * 2.5 - sprite.height;
         });
+        
+        this.view.zIndex = -1000;
+    }
+
+    public async awake() {    
         this.view.addChild(...this._bgBack, ...this._bgMid, ...this._bgFront);
         this.game.stage.addChild(this.view);
     }
 
     private createBackgroundSprites(texture: Texture): Sprite[] {
-        texture.baseTexture.wrapMode = "mirror-repeat";
+        
+        texture.source.addressMode = "repeat";
+        texture.source.scaleMode = "nearest";
+        texture.source.antialias = false;
+        
         const sprites = [];
         for (let i = 0; i < 2; i++) {
             const sprite = new Sprite(texture);
@@ -59,6 +68,7 @@ export class BGSystem implements System {
                 }
             }
             startPos = cameraPos;
+            return startPos;
         }
 
         updatePosition(this._bgBack, this._bgBackStartPos, 0.25); // slower
@@ -69,5 +79,13 @@ export class BGSystem implements System {
 
         updatePosition(this._bgFront, this._bgFrontStartPos, 0.75); // slower
         this._bgFrontStartPos = cameraPos;
+    }
+
+    public reset() {
+        this._bgBackStartPos = 0;
+        this._bgMidStartPos = 0;
+        this._bgFrontStartPos = 0;
+
+        this.view.removeChildren();
     }
 }

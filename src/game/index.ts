@@ -4,6 +4,7 @@ import { PauseSystem } from './systems/PauseSystem';
 import { HudSystem } from './systems/HudSystem';
 import { PlayerSystem } from './systems/PlayerSystem';
 import { TrackSystem } from './systems/TrackSystem';
+import { MiniMapSystem } from './systems/MiniMapSystem';
 
 import Camera from './camera';
 import { BGSystem } from './systems/BGSystem';
@@ -43,9 +44,9 @@ export class Game
         });
     }
 
-    public init()
+    public async init()
     {
-        this.sheet = Assets.cache.get("images/game-screen/game-screen.json");
+        this.sheet = Assets.cache.get("game-screen");
 
         this.systems.add(BGSystem);
         this.systems.add(PauseSystem);
@@ -54,12 +55,13 @@ export class Game
         this.systems.add(ObjectSystem);
         this.systems.add(PlayerSystem);
         this.systems.add(HudSystem);
-        this.systems.init();
+        this.systems.add(MiniMapSystem);
+        await this.systems.init();
     }
 
     public async awake()
     {
-        this.systems.awake();
+        await this.systems.awake();
         this.gameContainer.visible = true;
     }
 

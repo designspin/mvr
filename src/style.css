@@ -1,3 +1,9 @@
+* {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 html, body {
   -webkit-touch-callout: none;                
   -webkit-text-size-adjust: none;
@@ -18,4 +24,8 @@ canvas {
   width: 100%;
   height: auto;
   transform: translateY(-50%);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  outline: none
 }

@@ -1,0 +1,145 @@
+{
+  "name": "Custom Track",
+  "roadWidth": 1200,
+  "segLength": 200,
+  "rumbleLength": 4,
+  "lanes": 3,
+  "colors": {
+    "sky": 7526382,
+    "tree": 20744,
+    "fog": 20744,
+    "light": {
+      "road": 12763585,
+      "grass": 3249682,
+      "rumble": 16626868,
+      "lane": 15790320
+    },
+    "dark": {
+      "road": 11841969,
+      "grass": 3979286,
+      "rumble": 16731202
+    },
+    "start": {
+      "road": 6908265,
+      "grass": 3979286,
+      "rumble": 9703946
+    },
+    "finish": {
+      "road": 6908265,
+      "grass": 3979286,
+      "rumble": 9703946
+    }
+  },
+  "track": [
+    {
+      "func": "addStraight",
+      "params": [
+        100
+      ]
+    },
+    {
+      "func": "addCurve",
+      "params": [
+        100,
+        6
+      ]
+    },
+    {
+      "func": "addStraight",
+      "params": [
+        100
+      ]
+    },
+    {
+      "func": "addCurve",
+      "params": [
+        100,
+        -2
+      ]
+    },
+    {
+      "func": "addStraight",
+      "params": [
+        100
+      ]
+    },
+    {
+      "func": "addCurve",
+      "params": [
+        100,
+        -6
+      ]
+    },
+    {
+      "func": "addCurve",
+      "params": [
+        100,
+        -6
+      ]
+    },
+    {
+      "func": "addStraight",
+      "params": [
+        100
+      ]
+    },
+    {
+      "func": "addCurve",
+      "params": [
+        100,
+        2
+      ]
+    },
+    {
+      "func": "addStraight",
+      "params": [
+        100
+      ]
+    },
+    {
+      "func": "addStraight",
+      "params": [
+        100
+      ]
+    },
+    {
+      "func": "addCurve",
+      "params": [
+        100,
+        -6
+      ]
+    },
+    {
+      "func": "addStraight",
+      "params": [
+        100
+      ]
+    },
+    {
+      "func": "addStraight",
+      "params": [
+        100
+      ]
+    },
+    {
+      "func": "addCurve",
+      "params": [
+        100,
+        -6
+      ]
+    },
+    {
+      "func": "addStraight",
+      "params": [
+        25
+      ]
+    },
+    {
+      "func": "addCurve",
+      "params": [
+        100,
+        -6
+      ]
+    }
+  ]
+}

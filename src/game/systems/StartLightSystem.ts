@@ -1,4 +1,3 @@
-import { Ticker } from "pixi.js";
 import { Game } from "../";
 import { System } from "../SystemRunner";
 
@@ -12,7 +11,7 @@ export class StartLightSystem implements System
 
     }
 
-    public update(_dt: Ticker)
+    public update(_dt: number)
     {
 
     }

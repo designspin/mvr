@@ -446,7 +446,10 @@ class RacingState implements SystemState<CarSystem> {
                 newSegment.cars = [];
             }
 
-            if (newSegment.isFinishMarker) {
+            // Enhanced lap detection for AI cars
+            const hasCompletedLap = this.hasCarCrossedFinishLine(currentSegment, newSegment);
+            
+            if (hasCompletedLap) {
                 if (car.lap === -1) {
                     car.lap = 0;
                 } else {
@@ -457,6 +460,38 @@ class RacingState implements SystemState<CarSystem> {
 
             newSegment.cars.push(car);
         }
+    }
+
+    /**
+     * Enhanced lap detection for AI cars that handles high-speed scenarios.
+     * Checks if the car has crossed the finish line even if it didn't land on the exact segment.
+     */
+    private hasCarCrossedFinishLine(previousSegment: ISegment, currentSegment: ISegment): boolean {
+        // Standard case: car landed exactly on finish line segment
+        if (currentSegment.isFinishMarker) {
+            return true;
+        }
+        
+        // High-speed case: check if we crossed the finish line between segments
+        if (previousSegment && previousSegment.index !== currentSegment.index) {
+            const finishLineIndex = 0; // Finish line is always segment 0
+            const prevIndex = previousSegment.index;
+            const currentIndex = currentSegment.index;
+            
+            // Handle wrap-around at end of track
+            if (prevIndex > currentIndex) {
+                // We've wrapped around from end to beginning of track
+                // Check if finish line (0) is between previous segment and current segment
+                return (finishLineIndex >= 0 && finishLineIndex <= currentIndex) || 
+                       (prevIndex < this.track.segments.length - 1);
+            } else {
+                // Normal forward progression
+                // Check if finish line is between previous and current segment
+                return finishLineIndex > prevIndex && finishLineIndex <= currentIndex;
+            }
+        }
+        
+        return false;
     }
 
     private renderCars(ctx: CarSystem, baseSegment: ISegment) {

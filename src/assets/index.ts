@@ -19,20 +19,15 @@ export const resolveJsonUrl = {
 
 extensions.add(resolveJsonUrl);
 
-/** Initialise and start background loading of all assets */
 export async function initAssets()
 {
-    // Init PixiJS assets with this asset manifest
     await Assets.init({ manifest });
 
     logAvailableBundles();
-    // Load assets for the load screen
     await Assets.loadBundle(['preload', 'default', 'pause-overlay']);
 
-    // List all existing bundles names
     const allBundles = manifest.bundles.map((item) => item.name);
-    console.log('All bundles:', allBundles);
-    // Start up background loading of all bundles
+    
     Assets.backgroundLoadBundle(allBundles);
 }
 
@@ -40,11 +35,6 @@ function logAvailableBundles() {
     console.log('Available bundles:', manifest.bundles.map(b => b.name));
 }
 
-/**
- * Check to see if a bundle has loaded
- * @param bundle - The unique id of the bundle
- * @returns Whether or not the bundle has been loaded
- */
 export function isBundleLoaded(bundle: string)
 {
     const bundleManifest = manifest.bundles.find((b) => b.name === bundle);
@@ -56,7 +46,11 @@ export function isBundleLoaded(bundle: string)
 
     for (const asset of bundleManifest.assets as UnresolvedAsset[])
     {
-        if (!Assets.cache.has(asset.alias as string))
+        const aliases = Array.isArray(asset.alias) ? asset.alias : [asset.alias];
+        
+        const hasAnyAlias = aliases.some(alias => Assets.cache.has(alias));
+        
+        if (!hasAnyAlias)
         {
             return false;
         }
@@ -69,8 +63,8 @@ export function areBundlesLoaded(bundles: string[])
 {
     for (const name of bundles)
     {
-        console.log(`Checking bundle ${name} is loaded`);
-        if (!isBundleLoaded(name))
+        const loaded = isBundleLoaded(name);
+        if (!loaded)
         {
             return false;
         }

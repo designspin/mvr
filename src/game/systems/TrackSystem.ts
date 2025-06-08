@@ -108,7 +108,21 @@ export class TrackSystem implements System {
 
     private async loadTrackData() {
         try {
-            const trackData = await Assets.load<TrackData>(`tracks/track${this.game.level}.json`);
+            // Check if we're in championship mode and get the track file from the championship manager
+            const { ChampionshipManager } = await import('../championship');
+            const championshipManager = ChampionshipManager.getInstance();
+            const currentRace = championshipManager.getCurrentRace();
+            
+            let trackFile: string;
+            if (currentRace) {
+                // Use the championship's current race track file
+                trackFile = `tracks/${currentRace.trackFile}`;
+            } else {
+                // Fallback to the old level-based system for non-championship modes
+                trackFile = `tracks/track${this.game.level}.json`;
+            }
+            
+            const trackData = await Assets.load<TrackData>(trackFile);
             this._trackData = trackData;
             this.trackReady = true;
 

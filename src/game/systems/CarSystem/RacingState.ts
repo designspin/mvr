@@ -26,6 +26,7 @@ interface CarInterpolation {
 }
 
 class RacingState implements SystemState<CarSystem> {
+    private positionUpdateCounter = 0;
     private hud!: HudSystem;
     private track!: TrackSystem;
     private player!: PlayerSystem;
@@ -78,8 +79,11 @@ class RacingState implements SystemState<CarSystem> {
 
         this.updateRace(ctx, fixedDelta);
 
-        // Update position every frame for better responsiveness
-        this.updateRacePosition(ctx);
+        this.positionUpdateCounter++;
+        if (this.positionUpdateCounter >= 5) {
+            this.updateRacePosition(ctx);
+            this.positionUpdateCounter = 0;
+        }
 
         for (const car of ctx.cars) {
             if (!(car instanceof CarEntity)) continue;
@@ -228,16 +232,6 @@ class RacingState implements SystemState<CarSystem> {
 
             if (allRacers[i] === this.player) {
                 this.hud.setPosition(this.player.racePosition);
-                // Debug logging
-                if (Math.random() < 0.01) { // Log occasionally to avoid spam
-                    console.log(`Player position: ${this.player.racePosition}, lap: ${this.player.lap}, totalRaceDistance: ${this.player.totalRaceDistance}`);
-                    console.log('All racers:', allRacers.map(r => ({
-                        isPlayer: r === this.player,
-                        lap: r.lap,
-                        totalRaceDistance: r.totalRaceDistance,
-                        position: r.racePosition
-                    })));
-                }
             }
         }
     }
@@ -263,7 +257,7 @@ class RacingState implements SystemState<CarSystem> {
     }
 
     private isRaceStart(): boolean {
-        return this.player.lap === 0 && this.player.z < this.track.trackLength * 0.3;
+        return this.player.lap === -1 && this.player.z < this.track.trackLength * 0.3;
     }
 
     private handleRaceStartBehaviour(car: CarEntity, segment: ISegment) {
@@ -454,10 +448,8 @@ class RacingState implements SystemState<CarSystem> {
 
             if (newSegment.isFinishMarker) {
                 if (car.lap === -1) {
-                    // First finish line crossing: START lap 1 (but 0 laps completed)
                     car.lap = 0;
                 } else {
-                    // Subsequent crossings: complete current lap
                     car.lap++;
                 }
                 car.adjustSpeedMultiplier(0.98 + Math.random() * 0.04);

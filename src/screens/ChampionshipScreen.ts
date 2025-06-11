@@ -21,7 +21,7 @@ class ChampionshipPanel {
                 fontSize: 24,
                 fill: 0xffc42c,
                 fontWeight: 'bold',
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: 'CHAMPIONSHIP STANDINGS'
@@ -35,7 +35,7 @@ class ChampionshipPanel {
             style: {
                 fontSize: 16,
                 fill: 0xffffff,
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: 'Race 1 of 6'
@@ -49,7 +49,7 @@ class ChampionshipPanel {
             style: {
                 fontSize: 14,
                 fill: 0xcccccc,
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: 'Next: Test Track 1'
@@ -136,7 +136,7 @@ class ChampionshipPanel {
                 fontSize,
                 fill: color,
                 fontWeight,
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: position
@@ -149,7 +149,7 @@ class ChampionshipPanel {
                 fontSize,
                 fill: color,
                 fontWeight,
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'left'
             },
             text: name
@@ -162,7 +162,7 @@ class ChampionshipPanel {
                 fontSize: fontSize - 2,
                 fill: isHeader ? color : 0xcccccc,
                 fontWeight: isHeader ? fontWeight : 'normal',
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'left'
             },
             text: team
@@ -175,7 +175,7 @@ class ChampionshipPanel {
                 fontSize,
                 fill: color,
                 fontWeight,
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: points

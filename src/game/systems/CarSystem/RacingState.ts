@@ -257,7 +257,7 @@ class RacingState implements SystemState<CarSystem> {
     }
 
     private isRaceStart(): boolean {
-        return this.player.lap === -1 && this.player.z < this.track.trackLength * 0.3;
+        return this.player.lap === 0 && this.player.z < this.track.trackLength * 0.3;
     }
 
     private handleRaceStartBehaviour(car: CarEntity, segment: ISegment) {
@@ -428,7 +428,7 @@ class RacingState implements SystemState<CarSystem> {
         const distanceTraveled = dt * car.speed;
         car.z = increase(car.z, distanceTraveled, this.track.trackLength);
 
-        car.totalRaceDistance = (Math.max(0, car.lap + 1) * this.track.segments.length + segment.index + car.percent) * this.track.segmentLength;
+        car.totalRaceDistance = segment.index * this.track.segmentLength;
 
         car.percent = percentRemaining(car.z, this.track.segmentLength);
     }
@@ -446,52 +446,13 @@ class RacingState implements SystemState<CarSystem> {
                 newSegment.cars = [];
             }
 
-            // Enhanced lap detection for AI cars
-            const hasCompletedLap = this.hasCarCrossedFinishLine(currentSegment, newSegment);
-            
-            if (hasCompletedLap) {
-                if (car.lap === -1) {
-                    car.lap = 0;
-                } else {
-                    car.lap++;
-                }
+            if (newSegment.isFinishMarker) {
+                car.lap++;
                 car.adjustSpeedMultiplier(0.98 + Math.random() * 0.04);
             }
 
             newSegment.cars.push(car);
         }
-    }
-
-    /**
-     * Enhanced lap detection for AI cars that handles high-speed scenarios.
-     * Checks if the car has crossed the finish line even if it didn't land on the exact segment.
-     */
-    private hasCarCrossedFinishLine(previousSegment: ISegment, currentSegment: ISegment): boolean {
-        // Standard case: car landed exactly on finish line segment
-        if (currentSegment.isFinishMarker) {
-            return true;
-        }
-        
-        // High-speed case: check if we crossed the finish line between segments
-        if (previousSegment && previousSegment.index !== currentSegment.index) {
-            const finishLineIndex = 0; // Finish line is always segment 0
-            const prevIndex = previousSegment.index;
-            const currentIndex = currentSegment.index;
-            
-            // Handle wrap-around at end of track
-            if (prevIndex > currentIndex) {
-                // We've wrapped around from end to beginning of track
-                // Check if finish line (0) is between previous segment and current segment
-                return (finishLineIndex >= 0 && finishLineIndex <= currentIndex) || 
-                       (prevIndex < this.track.segments.length - 1);
-            } else {
-                // Normal forward progression
-                // Check if finish line is between previous and current segment
-                return finishLineIndex > prevIndex && finishLineIndex <= currentIndex;
-            }
-        }
-        
-        return false;
     }
 
     private renderCars(ctx: CarSystem, baseSegment: ISegment) {
@@ -589,8 +550,9 @@ class RacingState implements SystemState<CarSystem> {
                 `car-${car.spriteNum}-straight`;
         }
 
-        if (this.player.game.sheet?.textures[textureName]) {
-            car.texture = this.player.game.sheet.textures[textureName];
+        const texture = this.player.game.getTexture(textureName);
+        if (texture) {
+            car.texture = texture;
         }
     }
 }

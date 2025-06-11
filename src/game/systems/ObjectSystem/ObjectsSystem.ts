@@ -123,7 +123,7 @@ export class ObjectSystem implements System, SystemStateMachine<ObjectSystem> {
         if (track.segments[n].sprites === undefined) {
             track.segments[n].sprites = [];
         }
-        const sprite = new TrackObject(this.game.sheet.textures[source], offset, source);
+        const sprite = new TrackObject(this.game.getTexture(source), offset, source);
 
         sprite.cullable = true;
         sprite.visible = false;

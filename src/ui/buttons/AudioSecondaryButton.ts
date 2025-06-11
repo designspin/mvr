@@ -26,7 +26,7 @@ export class AudioSecondaryButton extends FancyButton
 
         const text = new Text(i18n.t('sound'), {
             fill: 0x000000,
-            fontFamily: 'Bungee Regular',
+            fontFamily: 'Bungee-Regular',
             fontWeight: 'bold',
             align: 'center',
             fontSize: 40,

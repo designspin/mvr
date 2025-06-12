@@ -188,7 +188,7 @@ class ChampionshipPanel {
                 fontSize,
                 fill: color,
                 fontWeight,
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: wins

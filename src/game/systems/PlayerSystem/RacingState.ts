@@ -444,16 +444,6 @@ export class RacingState implements SystemState<PlayerSystem> {
         
         results.sort((a, b) => a.position - b.position);
         
-        results.forEach(result => {
-            let driverName: string;
-            if (result.driverId === ctx.driver?.id) {
-                driverName = ctx.driver.name;
-            } else {
-                const aiCar = carSystem.cars.find((car: any) => car.driver?.id === result.driverId);
-                driverName = aiCar?.driver?.name || result.driverId;
-            }
-        });
-        
         return results;
     }
 }

@@ -5,12 +5,12 @@ import { sound } from "@pixi/sound";
 import { accelerate, increase, interpolate, limit, mapToSmaller, overlap, percentRemaining, randomChoice } from "../../../utilities";
 import { designConfig } from "../../designConfig";
 import { HudSystem } from "../HudSystem";
+import { CarSystem } from "../CarSystem";
+import { ChampionshipManager } from "../../championship";
 import { navigation } from "../../../navigation";
-import { LapCompletionOverlay } from "../../../screens/overlays/LapCompletionOverlay";
-import { ChampionshipManager } from "../../championship/ChampionshipManager";
 import { RaceResultsScreen } from "../../../screens/RaceResultsScreen";
 import { ChampionshipScreen } from "../../../screens/ChampionshipScreen";
-import { CarSystem } from "../CarSystem/CarSystem";
+import { LapCompletionOverlay } from "../../../screens/overlays/LapCompletionOverlay";
 
 export class RacingState implements SystemState<PlayerSystem> {
     private _totalLaps: number = 3;
@@ -82,12 +82,12 @@ export class RacingState implements SystemState<PlayerSystem> {
         }
 
         ctx.game.camera.position = increase(ctx.game.camera.position, dt * ctx.speed, track.trackLength);
+
         const playerSegment = ctx.segment;
 
-        ctx.percent = percentRemaining(ctx.z, track.segmentLength);
-        ctx.totalRaceDistance = (Math.max(0, ctx.lap + 1) * track.segments.length + playerSegment.index + ctx.percent) * track.segmentLength;
+        ctx.totalRaceDistance = playerSegment.index * track.segmentLength;
 
-        const absoluteSpeedFactor = ctx.speed / (ctx.maxSpeedHigh * 0.8);
+       const absoluteSpeedFactor = ctx.speed / (ctx.maxSpeedHigh * 0.8);
         const dx = dt * 2 * Math.min(absoluteSpeedFactor, 1.0);
 
         if (ctx.movementData?.direction === "left" ||
@@ -119,7 +119,7 @@ export class RacingState implements SystemState<PlayerSystem> {
         }
 
         if (ctx.overrevving) {
-            const overrevDecel = ctx.decel * 4;
+            const overrevDecel = ctx.decel * 4; // Overrevving deceleration
             ctx.speed = accelerate(ctx.speed, overrevDecel, dt);
 
             if (ctx.speed <= ctx.maxSpeed) {
@@ -239,14 +239,8 @@ export class RacingState implements SystemState<PlayerSystem> {
 
     private checkLapComplete(ctx: PlayerSystem) {
         const playerSegment = ctx.segment;
-        const track = ctx.game.systems.get(TrackSystem);
-        
-        // High-speed lap detection: check if we've crossed the finish line
-        const hasCompletedLap = this.hasPlayerCrossedFinishLine(ctx, track);
 
-        if (hasCompletedLap) {
-            // Update previousSegment immediately to prevent continuous triggering
-            ctx.previousSegment = playerSegment;
+        if (ctx.previousSegment !== playerSegment && playerSegment.isFinishMarker) {
             const hud = ctx.game.systems.get(HudSystem);
             
             if (ctx.lap === -1) {
@@ -313,46 +307,12 @@ export class RacingState implements SystemState<PlayerSystem> {
             // No lap completion, just update previousSegment for next check
             ctx.previousSegment = playerSegment;
         }
-    }
 
-    /**
-     * Enhanced lap detection that handles high-speed scenarios.
-     * Checks if the player has crossed the finish line even if they didn't land on the exact segment.
-     */
-    private hasPlayerCrossedFinishLine(ctx: PlayerSystem, track: TrackSystem): boolean {
-        const playerSegment = ctx.segment;
-        const previousSegment = ctx.previousSegment;
-        
-        // If we haven't moved to a new segment, no lap completion possible
-        if (previousSegment === playerSegment) {
-            return false;
+        if (ctx.lap >= this._totalLaps) {
+            // Transition to a state that handles the end of the race
         }
-        
-        // Standard case: player landed exactly on finish line segment
-        if (playerSegment.isFinishMarker) {
-            return true;
-        }
-        
-        // High-speed case: check if we crossed the finish line between segments
-        if (previousSegment && previousSegment.index !== playerSegment.index) {
-            const finishLineIndex = 0; // Finish line is always segment 0
-            const prevIndex = previousSegment.index;
-            const currentIndex = playerSegment.index;
-            
-            // Handle wrap-around at end of track
-            if (prevIndex > currentIndex) {
-                // We've wrapped around from end to beginning of track
-                // Check if finish line (0) is between previous segment and current segment
-                return (finishLineIndex >= 0 && finishLineIndex <= currentIndex) || 
-                       (prevIndex < track.segments.length - 1);
-            } else {
-                // Normal forward progression
-                // Check if finish line is between previous and current segment
-                return finishLineIndex > prevIndex && finishLineIndex <= currentIndex;
-            }
-        }
-        
-        return false;
+
+        ctx.previousSegment = playerSegment;
     }
 
     private completeRace(ctx: PlayerSystem) {

@@ -11,7 +11,6 @@ import Keyboard from '../../keyboard';
 import { sound } from "@pixi/sound";
 import { IRacer } from "../../../utilities/IRacer";
 import { WaitingState } from "./WaitingState";
-import { Driver, getPlayerDriver } from "../../championship/Driver";
 
 
 export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSystem> {
@@ -26,15 +25,8 @@ export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSy
     public sprite: Sprite = new Sprite();
     public shadow: Sprite = new Sprite();
     public racing: boolean = false;
-    public lap: number = -1;
+    public lap: number = 0;
     private _totalRaceDistance: number = 0;
-
-    public driver: Driver;
-
-    public lapStartTime: number = 0;
-    public currentLapTime: number = 0;
-    public bestLapTime: number | null = null;
-    public lapTimes: number[] = [];
 
     public X = 0.7;
     public Y = 0;
@@ -55,9 +47,7 @@ export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSy
     public gearChangeRequest: boolean = false;
     public overrevving: boolean = false;
 
-    constructor(private _state: SystemState<PlayerSystem> = new WaitingState()) {
-        this.driver = getPlayerDriver();
-    }
+    constructor(private _state: SystemState<PlayerSystem> = new WaitingState()) {}
 
     setState(state: SystemState<PlayerSystem>) {
         this._state = state;
@@ -225,7 +215,6 @@ export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSy
         const objectSystem = this.game.systems.get(ObjectSystem);
         objectSystem.signals.onLightsReady.connect(() => { 
             this.racing = true;
-            this.startLapTiming();
             this.switchState();
         });
     }
@@ -295,55 +284,14 @@ export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSy
         this._state.fixedUpdate?.(this, fixedDelta);
     }
 
-    public startLapTiming() {
-        this.lapStartTime = performance.now();
-        this.currentLapTime = 0;
-    }
-
-    public updateLapTime() {
-        if (this.lapStartTime > 0) {
-            this.currentLapTime = (performance.now() - this.lapStartTime) / 1000;
-        }
-    }
-
-    public completeLap(): number {
-        this.updateLapTime();
-        const lapTime = this.currentLapTime;
-        
-        if (lapTime > 0) {
-            this.lapTimes.push(lapTime);
-            
-            if (this.bestLapTime === null || lapTime < this.bestLapTime) {
-                this.bestLapTime = lapTime;
-            }
-        }
-
-        return lapTime;
-    }
-
-    public getLapTimingData() {
-        return {
-            currentLapTime: this.currentLapTime,
-            bestLapTime: this.bestLapTime,
-            position: this.racePosition,
-            lapNumber: this.lap,
-            totalLaps: 3
-        };
-    }
-
     reset() {
         this.X = 0.7;
         this.Y = 0;
         this._speed = 0;
 
         this.racing = false;
-        this.lap = -1;
+        this.lap = 0;
         this.racePosition = 0;
-
-        this.lapStartTime = 0;
-        this.currentLapTime = 0;
-        this.bestLapTime = null;
-        this.lapTimes = [];
 
         this.currentGear = 'LOW';
         this.gearChangeDelay = 0;

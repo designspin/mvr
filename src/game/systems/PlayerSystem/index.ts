@@ -25,8 +25,13 @@ export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSy
     public sprite: Sprite = new Sprite();
     public shadow: Sprite = new Sprite();
     public racing: boolean = false;
-    public lap: number = 0;
+    public lap: number = -1; // Start at -1, becomes 0 when starting lap 1
     private _totalRaceDistance: number = 0;
+
+    // Lap timing functionality
+    public lapTimes: number[] = [];
+    private _currentLapStartTime: number = 0;
+    public driver: { id: string; name: string } = { id: "player", name: "Player" };
 
     public X = 0.7;
     public Y = 0;
@@ -290,8 +295,12 @@ export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSy
         this._speed = 0;
 
         this.racing = false;
-        this.lap = 0;
+        this.lap = -1; // Reset to -1 (before starting lap 1)
         this.racePosition = 0;
+
+        // Reset lap timing
+        this.lapTimes = [];
+        this._currentLapStartTime = 0;
 
         this.currentGear = 'LOW';
         this.gearChangeDelay = 0;
@@ -308,5 +317,40 @@ export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSy
             this.sprite.texture = texture;
             this.shadow.texture = this.sprite.texture;
         }
+    }
+
+    // Lap timing methods
+    public startLapTiming(): void {
+        this._currentLapStartTime = performance.now();
+        console.log(`Started timing for lap ${this.lap + 1}`);
+    }
+
+    public updateLapTime(): void {
+        // This method now just exists for compatibility
+        // The actual lap time calculation happens in completeLap()
+    }
+
+    public completeLap(): number {
+        if (this._currentLapStartTime > 0) {
+            const lapTime = (performance.now() - this._currentLapStartTime) / 1000;
+            this.lapTimes.push(lapTime);
+            this._currentLapStartTime = 0;
+            console.log(`Completed lap in ${lapTime.toFixed(2)} seconds`);
+            return lapTime;
+        }
+        return 0;
+    }
+
+    public getLapTimingData(): { lapNumber: number; lapTime: number; bestLapTime: number; totalTime: number } {
+        const totalTime = this.lapTimes.reduce((sum, time) => sum + time, 0);
+        const bestLapTime = this.lapTimes.length > 0 ? Math.min(...this.lapTimes) : 0;
+        const currentLapTime = this.lapTimes.length > 0 ? this.lapTimes[this.lapTimes.length - 1] : 0;
+        
+        return {
+            lapNumber: this.lap,
+            lapTime: currentLapTime,
+            bestLapTime: bestLapTime,
+            totalTime: totalTime
+        };
     }
 }

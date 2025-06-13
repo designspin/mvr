@@ -5,7 +5,7 @@ import { sound } from "@pixi/sound";
 import { accelerate, increase, interpolate, limit, mapToSmaller, overlap, percentRemaining, randomChoice } from "../../../utilities";
 import { designConfig } from "../../designConfig";
 import { HudSystem } from "../HudSystem";
-import { CarSystem } from "../CarSystem";
+import { CarSystem } from "../CarSystem/CarSystem";
 import { ChampionshipManager } from "../../championship";
 import { navigation } from "../../../navigation";
 import { RaceResultsScreen } from "../../../screens/RaceResultsScreen";

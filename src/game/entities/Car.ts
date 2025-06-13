@@ -57,7 +57,7 @@ export default class CarEntity extends Sprite implements Car
     private _percent: number = 0;
     private _spriteNum: string = "";
     private _speedMultiplier: number = 1;
-    private _lap: number = 0;
+    private _lap: number = -1;
     private _racePosition: number = 0;
 
     private _aiProfile: AIProfile | null = null;

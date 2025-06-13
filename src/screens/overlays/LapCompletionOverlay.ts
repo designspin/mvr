@@ -23,7 +23,7 @@ class LapCompletionPanel {
                 fontSize: 28,
                 fill: 0xffc42c,
                 fontWeight: 'bold',
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center',
                 stroke: {
                     color: 0x000000,
@@ -41,7 +41,7 @@ class LapCompletionPanel {
                 fontSize: 24,
                 fill: 0xffffff,
                 fontWeight: 'bold',
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center',
                 stroke: {
                     color: 0x000000,

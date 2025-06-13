@@ -31,7 +31,7 @@ class RaceResultsPanel {
                 fontSize: 28,
                 fill: 0xffc42c,
                 fontWeight: 'bold',
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: 'RACE RESULTS'
@@ -45,7 +45,7 @@ class RaceResultsPanel {
             style: {
                 fontSize: 16,
                 fill: 0xffffff,
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: 'Test Track 1'
@@ -87,7 +87,7 @@ class RaceResultsPanel {
                 fontSize: 32,
                 fill: this.getPositionColor(playerResult.position),
                 fontWeight: 'bold',
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: this.getPositionText(playerResult.position)
@@ -102,7 +102,7 @@ class RaceResultsPanel {
                 fontSize: 18,
                 fill: 0xffc42c,
                 fontWeight: 'bold',
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: `+${playerResult.points} POINTS`
@@ -116,7 +116,7 @@ class RaceResultsPanel {
             style: {
                 fontSize: 14,
                 fill: 0xffffff,
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: `Best Lap: ${this.formatLapTime(playerResult.bestLapTime)}`
@@ -172,7 +172,7 @@ class RaceResultsPanel {
                 fontSize,
                 fill: color,
                 fontWeight,
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: position
@@ -185,7 +185,7 @@ class RaceResultsPanel {
                 fontSize,
                 fill: color,
                 fontWeight,
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'left'
             },
             text: name
@@ -198,7 +198,7 @@ class RaceResultsPanel {
                 fontSize,
                 fill: color,
                 fontWeight,
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: time
@@ -211,7 +211,7 @@ class RaceResultsPanel {
                 fontSize,
                 fill: color,
                 fontWeight,
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 align: 'center'
             },
             text: points

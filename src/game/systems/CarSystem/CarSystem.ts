@@ -84,18 +84,21 @@ export class CarSystem implements System, SystemStateMachine<CarSystem> {
     public reset() {
         const track = this.game.systems.get(TrackSystem);
 
+        // 1. Remove all car sprites from the track's view
         for (const car of this.cars) {
             if (car.parent) {
                 car.parent.removeChild(car);
             }
         }
 
+        // 2. Clear car references from track segments
         for (const segment of track.segments) {
             if (segment.cars && segment.cars.length > 0) {
                 segment.cars = [];
             }
         }
 
+        // 3. Reset the cars array
         this.cars = [];
 
         this.setState(new IdleState());

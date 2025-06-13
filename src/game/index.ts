@@ -23,6 +23,7 @@ export class Game
     public level = 1;
     public isMobileDevice = device.isMobileDevice();
     public sheet?: any;
+    private textureMap: Map<string, any> = new Map();
 
     constructor()
     {
@@ -47,6 +48,7 @@ export class Game
     public async init()
     {
         this.sheet = Assets.cache.get("game-screen");
+        this.buildTextureMap();
 
         this.systems.add(BGSystem);
         this.systems.add(PauseSystem);
@@ -91,5 +93,34 @@ export class Game
     {
         this.isGameOver = false;
         this.systems.reset();
+    }
+
+    private buildTextureMap() {
+        this.textureMap.clear();
+
+        if (this.sheet?.textures) {
+            for (const [name, texture] of Object.entries(this.sheet.textures)) {
+                this.textureMap.set(name, texture);
+            }
+        }
+
+        if (this.sheet?.linkedSheets) {
+            for (const linkedSheet of this.sheet.linkedSheets) {
+                if (linkedSheet.textures) {
+                    for (const [name, texture] of Object.entries(linkedSheet.textures)) {
+                        this.textureMap.set(name, texture);
+                    }
+                }
+            }
+        }
+
+    }
+
+    public getTexture(textureName: string) {
+        return this.textureMap.get(textureName) || null;
+    }
+
+    public getAllTextureNames(): string[] {
+        return Array.from(this.textureMap.keys());
     }
 }

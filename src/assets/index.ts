@@ -21,7 +21,7 @@ extensions.add(resolveJsonUrl);
 
 export async function initAssets()
 {
-    await Assets.init({ manifest });
+    await Assets.init({ manifest, basePath: 'assets' });
 
     logAvailableBundles();
     await Assets.loadBundle(['preload', 'default', 'pause-overlay']);
@@ -44,19 +44,27 @@ export function isBundleLoaded(bundle: string)
         return false;
     }
 
-    for (const asset of bundleManifest.assets as UnresolvedAsset[])
-    {
-        const aliases = Array.isArray(asset.alias) ? asset.alias : [asset.alias];
-        
-        const hasAnyAlias = aliases.some(alias => Assets.cache.has(alias));
-        
-        if (!hasAnyAlias)
-        {
+    for (const asset of bundleManifest.assets as UnresolvedAsset[]) {
+        if (!Assets.cache.has(asset.alias as string)) {
             return false;
         }
     }
 
     return true;
+    
+    // for (const asset of bundleManifest.assets as UnresolvedAsset[])
+    // {
+    //     const aliases = Array.isArray(asset.alias) ? asset.alias : [asset.alias];
+        
+    //     const hasAnyAlias = aliases.some(alias => Assets.cache.has(alias));
+        
+    //     if (!hasAnyAlias)
+    //     {
+    //         return false;
+    //     }
+    // }
+
+    // return true;
 }
 
 export function areBundlesLoaded(bundles: string[])

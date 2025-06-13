@@ -66,19 +66,18 @@ export default class CarEntity extends Sprite implements Car
     private _competingWith: Car | null = null;
     private _racingLine: number = 0;
 
-    public targetSteeringState: number = 0; 
+    public targetSteeringState: number = 0; // -2 (hard left) to +2 (hard right)
     public currentSteeringState: number = 0;
     public readonly STEERING_SMOOTHING = 0.2;
 
     public framesSinceDirectionChange: number = 0;
-    public lastAvoidanceDirection: number = 0; 
+    public lastAvoidanceDirection: number = 0; // -1 for left, 1 for right, 0 for no direction
     public totalRaceDistance: number = 0;
-    
-    public driver: Driver | null = null;
 
-    constructor(spriteNum: string, game: Game, z: number, offset: number, aiCarIndex?: number)
-    {
-        super(game.sheet?.textures[`car-${spriteNum}-straight`]);
+    public driver: Driver | null = null;
+    
+    constructor(spriteNum: string, game: Game, z: number, offset: number, aiCarIndex?: number) {
+        super(game.getTexture(`car-${spriteNum}-straight`));
         this._game = game;
         this._z = z;
         this._offset = offset;

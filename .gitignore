@@ -12,11 +12,18 @@ dist
 dist-ssr
 *.local
 
+# AssetPack cache
+.assetpack/
+
+# Generated manifest
+src/manifest.json
+
 # Generated assets (built from raw-assets/)
 public/audio/
 public/fonts/
 public/images/
 public/tracks/
+public/assets/
 
 # Editor directories and files
 .vscode/*

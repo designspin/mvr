@@ -30,7 +30,7 @@ export class LoadScreen extends Container implements AppScreen
         this.addChild(this._spinnerTop);
 
         this._text = new Text({ text: i18n.t('loading'), style: {
-            fontFamily: 'Bungee Regular',
+            fontFamily: 'Bungee-Regular',
             fontSize: 24,
             fill: 0xffffff,
             align: 'center'

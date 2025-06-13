@@ -453,7 +453,7 @@ class RacingState implements SystemState<CarSystem> {
                 if (car.lap === -1) {
                     car.lap = 0;
                 } else {
-                    car.lap++;
+                car.lap++;
                 }
                 car.adjustSpeedMultiplier(0.98 + Math.random() * 0.04);
             }
@@ -589,8 +589,9 @@ class RacingState implements SystemState<CarSystem> {
                 `car-${car.spriteNum}-straight`;
         }
 
-        if (this.player.game.sheet?.textures[textureName]) {
-            car.texture = this.player.game.sheet.textures[textureName];
+        const texture = this.player.game.getTexture(textureName);
+        if (texture) {
+            car.texture = texture;
         }
     }
 }

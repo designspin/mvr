@@ -1,5 +1,5 @@
 import { pixiPipes } from "@assetpack/core/pixi";
-
+import { webfont } from "@assetpack/core/webfont";
 // export default {
 //     entry: './raw-assets',
 //     output: './public/',
@@ -24,12 +24,13 @@ import { pixiPipes } from "@assetpack/core/pixi";
 
 export default {
     entry: './raw-assets',
-    output: './public/',
+    output: './public/assets',
     cache: true,
     pipes: [
         ...pixiPipes({
-            cacheBust: false,
             texturePacker: {
+                removeFileExtension: true,
+                addFrameNames: true,
                 texturePacker: {
                     removeFileExtension: true,
                 },

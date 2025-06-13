@@ -137,7 +137,7 @@ export class PauseOverlay extends Container implements AppScreen
     {
         this._resumeBtn = new SecondaryButton({
             textStyle: {
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 fontSize: 56,
                 fontWeight: 'bold',
                 align: 'center'
@@ -151,7 +151,7 @@ export class PauseOverlay extends Container implements AppScreen
 
         this._quitBtn = new SecondaryButton({
             textStyle: {
-                fontFamily: 'BebasNeue Regular',
+                fontFamily: 'BebasNeue-Regular',
                 fontSize: 56,
                 fontWeight: 'bold',
                 align: 'center'

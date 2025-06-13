@@ -193,8 +193,9 @@ export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSy
         this.shadow.alpha = 0.3;
         this.shadow.tint = 0x000000;
 
-        if (this.game.sheet && this.game.sheet.textures && this.game.sheet.textures[`car-${PlayerSystem.imageNo}-straight`]) {
-            this.sprite.texture = this.game.sheet.textures[`car-${PlayerSystem.imageNo}-straight`];
+        const texture = this.game.getTexture(`car-${PlayerSystem.imageNo}-straight`);
+        if (texture) {
+            this.sprite.texture = texture;
             this.shadow.texture = this.sprite.texture;
         } else {
             throw new Error("Unable to assign texture for player.");
@@ -354,8 +355,9 @@ export class PlayerSystem implements System, IRacer, SystemStateMachine<PlayerSy
 
         this.previousSegment = null;
 
-        if (this.game.sheet?.textures) {
-            this.sprite.texture = this.game.sheet.textures[`car-${PlayerSystem.imageNo}-straight`];
+        const texture = this.game.getTexture(`car-${PlayerSystem.imageNo}-straight`);
+        if (texture) {
+            this.sprite.texture = texture;
             this.shadow.texture = this.sprite.texture;
         }
     }

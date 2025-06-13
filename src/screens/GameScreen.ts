@@ -27,14 +27,14 @@ export class GameScreen extends Container implements AppScreen
             this.alpha = 1 * progress;
         })
         
-        this._game.start();
+        await this._game.start();
     }
 
     public async hide()
     {
         this.alpha = 1;
         
-        this._game.end();
+        await this._game.end();
 
         await animate(progress => {
             this.alpha = 1 - (1 * progress);
